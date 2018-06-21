@@ -59,7 +59,7 @@ cat tz.tmp > /mnt/tzfinal.tmp
 rm tz.tmp
 curl https://raw.githubusercontent.com/Rhylx/RBS/master/chroot_rbs > /mnt/chroot.sh && arch-chroot /mnt bash chroot.sh && rm /mnt/chroot.sh
 
-echo $comp > /mnt/etc/hostname
+echo "$comp" > /mnt/etc/hostname
 
 echo  "Reboot computer?"
 select yn in "Yes" "No"; do
