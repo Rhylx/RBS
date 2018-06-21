@@ -39,6 +39,7 @@ p
 w
 EOF
 partprobe
+lsblk
 
 mkfs.ext4 /dev/sda4
 mkfs.ext4 /dev/sda3
