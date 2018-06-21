@@ -14,7 +14,7 @@ fi
 
 timedatectl set-ntp true
 
-dd if=/dev/urandom of=/dev/sda
+dd if=/dev/urandom of=/dev/sda status="progress"
 cat <<EOF | fdisk /dev/sda
 o
 n
