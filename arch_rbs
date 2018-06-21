@@ -55,7 +55,7 @@ lsblk
 
 pacstrap /mnt base base-devel
 
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -U /mnt > /mnt/etc/fstab
 cat tz.tmp > /mnt/tzfinal.tmp
 rm tz.tmp
 curl https://raw.githubusercontent.com/Rhylx/RBS/master/chroot_rbs > /mnt/chroot.sh && arch-chroot /mnt bash chroot.sh && rm /mnt/chroot.sh
