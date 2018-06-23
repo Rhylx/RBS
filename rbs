@@ -34,9 +34,9 @@ for x in $(cat /tmp/progs.csv | awk -F, {'print $1'})
 do
 	n=$((n+1))
 	echo "Downloading and installing program $n out of $count: $x..."
-	printf '\n'
-	printf '\n'
 	echo "The first programs will take more time due to dependencies. You can watch the output on tty6." 
+	printf '\n'
+	printf '\n'
 	installProgram $x >/dev/tty6
 done
 
