@@ -43,7 +43,7 @@ done
 echo "Preparing the user script (sudoers)..."
 curl https://raw.githubusercontent.com/Rhylx/RBS/master/sudoers > /etc/sudoers
 cd /tmp
-curl https://raw.githubusercontent.com/Rhylx/RBS/rbs_user > /tmp/rbs_user
+curl https://raw.githubusercontent.com/Rhylx/RBS/master/rbs_user > /tmp/rbs_user
 sudo -u $name bash /tmp/rbs_user
 rm -f /tmp/rbs_user
 
