@@ -1,4 +1,5 @@
 compton,,transparency and removing tearing
+dialog,,
 dmenu,,command runner
 feh,,image viewer
 firefox,,default browser
@@ -23,5 +24,6 @@ unclutter-xfixes-git,,hides mouse if idle
 unrar,,extraction
 unzip,,extraction
 w3m,,
+vim,,
 xorg-server,,graphical environment
 xorg-xinit,,graphical environment
