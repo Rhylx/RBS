@@ -16,84 +16,52 @@ do
 	printf '\n'
 done
 
-echo -e "Adding user \"$name\"" 
+echo -e "Adding user "$name"" 
 useradd -m -g wheel -s /bin/bash $name >/dev/tty6
 echo "$name:$pass1" | chpasswd >/dev/tty6
 
 echo "Refreshing Arch Keyring..."
 pacman --noconfirm -Sy archlinux-keyring >/dev/tty6
 
-dialog --infobox "Getting program list..." 4 40
+echo "Getting program list..."
 curl https://raw.githubusercontent.com/Rhylx/RBS/master/progs.csv > /tmp/progs.csv
 rm /tmp/aur_queue &>/dev/tty6
-count=$(cat /tmp/progs.csv | grep -G ",$let," | wc -l)
+count=$(cat /tmp/progs.csv | wc -l)
 n=0
 installProgram() { ( (pacman --noconfirm --needed -S $1 &>/dev/tty6 && echo $1 installed.) || echo $1 >> /tmp/aur_queue) || echo $1 >> /tmp/larbs_failed ;}
 
-for x in $(cat /tmp/progs.csv | grep -G ",$let," | awk -F, {'print $1'})
+for x in $(cat /tmp/progs.csv | awk -F, {'print $1'})
 do
 	n=$((n+1))
-	echo "Downloading and installing program $n out of $count: $x...\n\nThe first programs will take more time due to dependencies. You can watch the output on tty6." 
+	echo "Downloading and installing program $n out of $count: $x..."
+	printf '\n'
+	printf '\n'
+	echo "The first programs will take more time due to dependencies. You can watch the output on tty6." 
 	installProgram $x >/dev/tty6
 done
 
-
-
-## TO BE CONTINUED :
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-echo "Preparing the user script..."
-curl https://raw.githubusercontent.com/Rhylx/larbs/master/src/sudoers_tmp > /etc/sudoers
+echo "Preparing the user script (sudoers)..."
+curl https://raw.githubusercontent.com/Rhylx/larbs/master/sudoers > /etc/sudoers
 cd /tmp
-if [ $1 = "devel" ]
-then curl https://raw.githubusercontent.com/LukeSmithxyz/larbs/devel/src/larbs_user.sh > /tmp/larbs_user.sh;
-else curl https://raw.githubusercontent.com/LukeSmithxyz/larbs/master/src/larbs_user.sh > /tmp/larbs_user.sh;
-fi
-sudo -u $name bash /tmp/larbs_user.sh
-rm -f /tmp/larbs_user.sh
+curl https://raw.githubusercontent.com/Rhylx/RBS/rbs_user > /tmp/rbs_user
+sudo -u $name bash /tmp/rbs_user
+rm -f /tmp/rbs_user
 
-dialog --infobox "Installing \"st\" from source..." 4 40
+echo "Installing st from source..."
 cd /tmp
 rm -rf st
-git clone --depth 1 https://github.com/lukesmithxyz/st.git
+git clone --depth 1 https://github.com/Rhylx/st.git
 cd st
 make
 make install
 cd /tmp
 
-dialog --infobox "Installing \"dmenu\" from source..." 4 40
-cd /tmp
-rm -rf dmenu
-git clone --depth 1 https://github.com/lukesmithxyz/dmenu.git
-cd dmenu
-make
-make install
-cd /tmp
-
-# R markdown install.
-
-dialog --infobox "Enabling Network Manager..." 4 40
+echo "Enabling Network Manager..."
 systemctl enable NetworkManager
 systemctl start NetworkManager
 
-dialog --infobox "Getting rid of that retarded error beep sound..." 10 50
+echo "Getting rid of that retarded error beep sound..."
 rmmod pcspkr
 echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf
 
-dialog --infobox "Updating sudoers file..." 4 40
-curl https://raw.githubusercontent.com/LukeSmithxyz/larbs/master/src/sudoers > /etc/sudoers
-
-dialog --title "All done!" --msgbox "Congrats! Provided there were no hidden errors, the script completed successfully and all the programs and configuration files should be in place.\n\nTo run the new graphical environment, log out and log back in as your new user, then run the command \"startx\" to start the graphical environment.\n\n-Luke" 12 80
-clear
+echo "Installation finished. To start i3, run command : startx"

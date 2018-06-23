@@ -1,0 +1,26 @@
+compton,,transparency and removing tearing
+dmenu,,command runner
+feh,,image viewer
+firefox,,default browser
+gimp,G,image modification
+git,,dling config repos
+highlight,r,ranger previews highlighted
+htop-vim-git,D,system info
+i3-gaps,,window manager
+i3blocks,,status bar
+i3lock,,screen lock
+imagemagick,D,"image conversion and modification, lock screen"
+libreoffice-fresh,L,office suite
+neofetch,D,system stats
+network-manager-applet,,GUI wifi manager
+networkmanager,,network manager
+packer,,AUR manager
+ranger,r,file manager
+rsync,,
+ttf-inconsolata,,mono font
+unclutter-xfixes-git,,hides mouse if idle
+unrar,,extraction
+unzip,,extraction
+w3m,,
+xorg-server,,graphical environment
+xorg-xinit,,graphical environment
