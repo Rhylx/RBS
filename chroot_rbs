@@ -1,6 +1,6 @@
 # My chroot file (once again based on LARBS chroot)
 
-echo "Enter your root password"
+echo "Enter your root password: "
 passwd
 
 TZuser=$(cat tzfinal.tmp)
