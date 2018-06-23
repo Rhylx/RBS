@@ -9,6 +9,7 @@ htop-vim-git,D,system info
 i3-gaps,,window manager
 i3blocks,,status bar
 i3lock,,screen lock
+i3status,,
 imagemagick,D,"image conversion and modification, lock screen"
 libreoffice-fresh,L,office suite
 neofetch,D,system stats
