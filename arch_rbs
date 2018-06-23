@@ -2,9 +2,9 @@
 
 # This script will auto-install Arch Linux the way I like
 
-read -p " Enter a name for the computer " comp 
+read -p " Enter a name for the computer: " comp 
 tzselect > tz.tmp
-read -p "Enter partionsize in gb, separated by space (swap & root)" -a SIZE
+read -p "Enter partionsize in gb, separated by space (swap & root): " -a SIZE
 
 re='^[0-9]+$'
 if ! [ ${#SIZE[@]} -eq 2 ] || ! [[ ${SIZE[0]} =~ $re ]] || ! [[ ${SIZE[1]} =~ $re ]] ; then
