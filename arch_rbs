@@ -64,19 +64,10 @@ curl https://raw.githubusercontent.com/Rhylx/RBS/master/chroot_rbs > /mnt/chroot
 echo "$comp" > /mnt/etc/hostname
 
 
-echo  "Do you want to install RBS?"
+echo  "Reboot computer?"
 select yn in "Yes" "No"; do
-  case $yn in
-	Yes ) bash rbs;;
-	No  ) 
-		echo  "Reboot computer?"
-		select yn in "Yes" "No"; do
-  			case $yn in
-			  Yes ) reboot;;
-			  No  ) exit ;;
-  			esac
-		done 
- ;;
-  esac
+	case $yn in
+	Yes ) reboot;;
+	No  ) exit ;;
+  	esac
 done 
-clear
