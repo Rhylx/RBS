@@ -63,7 +63,7 @@ curl https://raw.githubusercontent.com/Rhylx/RBS/master/chroot_rbs > /mnt/chroot
 
 echo "$comp" > /mnt/etc/hostname
 
-curl https://raw.githubusercontent.com/Rhylx/RBS/master/rbs
+curl https://raw.githubusercontent.com/Rhylx/RBS/master/rbs > rbs
 echo  "Do you want to install RBS?"
 select yn in "Yes" "No"; do
   case $yn in
