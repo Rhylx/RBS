@@ -26,6 +26,7 @@ network-manager-applet,GUI wifi manager
 networkmanager,network manager
 newsboat,CLI RSS client
 packer,AUR manager
+pass,password manager
 poppler,manipulates .pdfs and gives .pdf preview in ranger
 pulseaudio,audio system
 pulseaudio-alsa,audio interface with ALSA (audio drivers)
