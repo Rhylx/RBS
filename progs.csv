@@ -1,29 +1,55 @@
-compton,,transparency and removing tearing
-dialog,,
-dmenu,,command runner
-feh,,image viewer
-firefox,,default browser
-gimp,G,image modification
-git,,dling config repos
-highlight,r,ranger previews highlighted
-htop-vim-git,D,system info
-i3-gaps,,window manager
-i3blocks,,status bar
-i3lock,,screen lock
-i3status,,
-imagemagick,D,"image conversion and modification, lock screen"
-libreoffice-fresh,L,office suite
-neofetch,D,system stats
-network-manager-applet,,GUI wifi manager
-networkmanager,,network manager
-packer,,AUR manager
-ranger,r,file manager
-rsync,,
-ttf-inconsolata,,mono font
-unclutter-xfixes-git,,hides mouse if idle
-unrar,,extraction
-unzip,,extraction
-w3m,,
-vim,,
-xorg-server,,graphical environment
-xorg-xinit,,graphical environment
+broadcom-wl,proprietary wireless driver
+compton,transparency and removing tearing
+dmenu,command runner
+fail2ban,against brute hacks
+feh,image viewer
+fzf,is a fuzzy finder tool
+gimp,image modification
+git,dling config repos
+gvim,
+highlight,ranger previews highlighted
+htop-vim-git,system info
+https://github.com/Rhylx/st.git,
+i3-gaps,window manager
+i3blocks,status bar
+i3lock,screen lock
+i3status,
+i8kutils,for fan regulation
+imagemagick,"image conversion and modification, lock screen"
+ipe,helps to make beautiful maths figures
+libreoffice-fresh,office suite
+mpc,terminal interface for mpd
+mpd,music daemon
+mpv,video/git player
+neofetch,system stats
+network-manager-applet,GUI wifi manager
+networkmanager,network manager
+newsboat,CLI RSS client
+packer,AUR manager
+poppler,manipulates .pdfs and gives .pdf preview in ranger
+pulseaudio,audio system
+pulseaudio-alsa,audio interface with ALSA (audio drivers)
+pulsemixer,audio controller
+python-pywal,generates color schemes based on your wallpaper
+qutebrowser,vim based browser
+ranger,file manager
+rsync,
+sc-im,spreadsheet manager
+scrot,
+texlive-lang,latex
+texlive-most,latex
+ttf-inconsolata,mono font
+unclutter-xfixes-git,hides mouse if idle
+unrar,extraction
+unzip,extraction
+urlview,parses URLs in the terminal allowing keyboard-based selection
+vim-pathogen,plug-in manager for vim
+w3m,terminal browser and can also preview images in ranger
+wget,downloads sites and files terminal based
+xorg-server,graphical environment
+xorg-xinit,graphical environment
+youtube-dl,downloads any yt video (or playlist or channel) when links is provided
+youtube-viewer,is a terminal interface for watching yt videos without browser
+zathura,lightweight pdf viewer
+zathura-djvu,dives zathura the ability to read .djvu files
+zathura-pdf-mupdf,allows mupdf pdf compatibility in zathura
