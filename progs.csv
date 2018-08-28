@@ -40,6 +40,7 @@ scrot,
 texlive-lang,latex
 texlive-most,latex
 ttf-inconsolata,mono font
+ttf-monaco,apple mono font
 unclutter-xfixes-git,hides mouse if idle
 unrar,extraction
 unzip,extraction
