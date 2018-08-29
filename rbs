@@ -16,7 +16,7 @@ do
 	printf '\n'
 done
 
-echo -e "Adding user "$name"" 
+echo -e "Adding user "$name""
 useradd -m -g wheel -s /bin/bash $name >/dev/tty6
 echo "$name:$pass1" | chpasswd >/dev/tty6
 
@@ -34,7 +34,7 @@ for x in $(cat /tmp/progs.csv | awk -F, {'print $1'})
 do
 	n=$((n+1))
 	echo "Downloading and installing program $n out of $count: $x..."
-	echo "The first programs will take more time due to dependencies. You can watch the output on tty6." 
+	echo "The first programs will take more time due to dependencies. You can watch the output on tty6."
 	printf '\n'
 	printf '\n'
 	installProgram $x >/dev/tty6
@@ -47,14 +47,27 @@ curl https://raw.githubusercontent.com/Rhylx/RBS/master/rbs_user > /tmp/rbs_user
 sudo -u $name bash /tmp/rbs_user
 rm -f /tmp/rbs_user
 
+echo "Creating basic folders "
+mkdir Repos
+mkdir Music
+mkdir Pictures
+mkdir Videos
+mkdir Documents
+mkdir Downloads
+
 echo "Installing st from source..."
-cd /tmp
+cd /Repos
 rm -rf st
 git clone --depth 1 https://github.com/Rhylx/st.git
 cd st
 make
 make install
-cd /tmp
+
+echo "Initialising shortcut-sync"
+shortcuts.sh
+
+echo "Calibrating fan speed"
+sudo pwmconfig
 
 echo "Enabling Network Manager..."
 systemctl enable NetworkManager
@@ -63,7 +76,7 @@ systemctl start NetworkManager
 echo "Getting rid of that retarded error beep sound..."
 rmmod pcspkr
 echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf
-echo " Updating sudoers ( end of installation ): " 
+echo " Updating sudoers ( end of installation ): "
 curl https://raw.githubusercontent.com/Rhylx/RBS/master/sudoers > /etc/sudoers
 
 echo "Installation finished. To start i3, run command : startx"
