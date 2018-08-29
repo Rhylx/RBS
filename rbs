@@ -51,27 +51,17 @@ echo "Initialising git "
 git config --global user.email "redbull11570@gmail.com"
 git config --global user.name "Rhylx"
 
-echo "Creating basic folders "
-mkdir Repos
-mkdir Music
-mkdir Pictures
-mkdir Videos
-mkdir Documents
-mkdir Downloads
-
 echo "Installing st from source..."
-cd /Repos
+cd /tmp
 rm -rf st
 git clone --depth 1 https://github.com/Rhylx/st.git
 cd st
 make
 make install
+cd /tmp
 
 echo "Initialising shortcut-sync"
 shortcuts.sh
-
-echo "Calibrating fan speed"
-sudo pwmconfig
 
 echo "Enabling Network Manager..."
 systemctl enable NetworkManager
