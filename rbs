@@ -47,6 +47,10 @@ curl https://raw.githubusercontent.com/Rhylx/RBS/master/rbs_user > /tmp/rbs_user
 sudo -u $name bash /tmp/rbs_user
 rm -f /tmp/rbs_user
 
+echo "Initialising git "
+git config --global user.email "redbull11570@gmail.com"
+git config --global user.name "Rhylx"
+
 echo "Creating basic folders "
 mkdir Repos
 mkdir Music
