@@ -72,6 +72,9 @@ echo "set config(auto)	1" >> /etc/i8kutils/i8kmon.conf
 systemctl enable i8kmon
 systemctl start i8kmon
 
+echo "Configuring lux for brightness..."
+lux
+
 echo "Getting rid of that retarded error beep sound..."
 rmmod pcspkr
 echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf
