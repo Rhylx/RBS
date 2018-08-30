@@ -18,6 +18,7 @@ i8kutils,for fan regulation
 imagemagick,"image conversion and modification, lock screen"
 ipe,helps to make beautiful maths figures
 libreoffice-fresh,office suite
+lux,needed for brightness
 mpc,terminal interface for mpd
 mpd,music daemon
 mpv,video/git player
