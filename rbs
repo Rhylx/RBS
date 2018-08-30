@@ -67,6 +67,11 @@ echo "Enabling Network Manager..."
 systemctl enable NetworkManager
 systemctl start NetworkManager
 
+echo "Enabling i8kutils for fan..."
+echo "set config(auto)	1" >> /etc/i8kutils/i8kmon.conf
+systemctl enable i8kutils.service
+systemctl start i8kutils.service
+
 echo "Getting rid of that retarded error beep sound..."
 rmmod pcspkr
 echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf
