@@ -1,4 +1,5 @@
 acpi,shows battery status (needed for i8kmon: fan control),,
+biber,soft to easily create bibliography in latex,,
 broadcom-wl,proprietary wireless driver,,
 compton,transparency and removing tearing,,
 cronie,time based job scheduler,,
