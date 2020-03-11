@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This is the main script of RBS : it will auto-install and configure all programs that I dayli use
+# This is the main script of RBS : it will auto-install and configure all programs that I daily use
 
 read -p "Enter the username of your account: " name
 read -sp "Enter a password for your account: " pass1
