@@ -53,8 +53,11 @@ EOF
 
 format(){
 	mkfs.ext4 -q /dev/sda4
+
 	mkfs.ext4 -q /dev/sda3
+
 	mkfs.ext4 -q /dev/sda1
+
 	mkswap /dev/sda2 2>&1 >/dev/null
 	swapon /dev/sda2 2>&1 >/dev/null
 }
@@ -71,7 +74,7 @@ echo "hi"
 
 remove_all(){
 swapoff /dev/sda2 2>&1 >/dev/null
-fdisk /dev/sd$X <<EOF
+2>&- 1>/dev/null fdisk /dev/sd$X <<EOF
 
 
 o
