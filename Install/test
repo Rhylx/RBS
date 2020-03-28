@@ -52,9 +52,9 @@ EOF
 
 
 format(){
-	mkfs.ext4 /dev/sda4 2>&1 >/dev/null
-	mkfs.ext4 /dev/sda3 2>&1 >/dev/null
-	mkfs.ext4 /dev/sda1 2>&1 >/dev/null
+	mkfs.ext4 -q /dev/sda4
+	mkfs.ext4 -q /dev/sda3
+	mkfs.ext4 -q /dev/sda1
 	mkswap /dev/sda2 2>&1 >/dev/null
 	swapon /dev/sda2 2>&1 >/dev/null
 }
