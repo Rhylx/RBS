@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 #I/O part :
 
 
@@ -7,7 +8,8 @@ echo -e "Here is the output of lsblk : \n"
 lsblk
 echo
 read -p "Enter drive you want it to install on (only a if on /dev/sda): " -a X
-read -p "Enter partionsize in gb (assuming that there will be 4 partitions: boot, swap, / and /home), separated by a space (swap & /): " -a SIZE
+echo "Assuming that there will be 4 partitions: boot, swap, / and /home"
+read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
 
 #Functionnal part :
 
@@ -53,27 +55,26 @@ EOF
 
 
 format(){
-	mkfs.ext4 /dev/sda4
-	mkfs.ext4 /dev/sda3
-	mkfs.ext4 /dev/sda1
-	mkswap /dev/sda2
-	swapon /dev/sda2
+	mkfs.ext4 /dev/sda4 1>/dev/null
+	mkfs.ext4 /dev/sda3 1>/dev/null
+	mkfs.ext4 /dev/sda1 1>/dev/null
+	mkswap /dev/sda2 1>/dev/null
+	swapon /dev/sda2 1>/dev/null
 }
 
 
 mount(){
-mount /dev/sda3 /mnt
-mkdir /mnt/boot
-mount /dev/sda1 /mnt/boot
-mkdir /mnt/home
-mount /dev/sda4 /mnt/home
+	mount /dev/sda3 /mnt
+	mkdir /mnt/boot
+	mount /dev/sda1 /mnt/boot
+	mkdir /mnt/home
+	mount /dev/sda4 /mnt/home
 }
 
 
 install(){
 echo "hi"
 }
-
 
 remove_all(){
 echo "An error has occured. Fix the issue and rerun this script."
