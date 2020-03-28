@@ -4,10 +4,11 @@
 echo -e "Here is the output of lsblk : \n"
 lsblk
 echo
-read -p "Enter drive you want it to install on (only a if on /dev/sda): " -a X
+#read -p "Enter drive you want it to install on (only a if on /dev/sda): " -a X
 echo "Assuming that there will be 4 partitions: boot, swap, / and /home"
-read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
-
+#read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
+X=a
+SIZE=2 10
 #Functionnal part :
 
 
@@ -52,26 +53,26 @@ EOF
 
 
 format(){
-	mkfs.ext4 -qF /dev/sda4	>/dev/null 2>&1
-	mkfs.ext4 -qF /dev/sda3 >/dev/null 2>&1
-	mkfs.ext4 -qF /dev/sda1 >/dev/null 2>&1
-	mkswap /dev/sda2 >/dev/null 2>&1
-	swapon /dev/sda2 >/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd$X4	>/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd$X3 >/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd$X1 >/dev/null 2>&1
+	mkswap /dev/sd$X2 >/dev/null 2>&1
+	swapon /dev/s$X2 >/dev/null 2>&1
 }
 
 
 mount(){
 echo "hi"
-#	mount /dev/sda3 /mnt
-#	mkdir /mnt/boot
-#	mount /dev/sda1 /mnt/boot
-#	mkdir /mnt/home
-#	mount /dev/sda4 /mnt/home
+	mount /dev/sd$X3 /mnt
+	mkdir /mnt/boot
+	mount /dev/sd$X1 /mnt/boot
+	mkdir /mnt/home
+	mount /dev/sd$X4 /mnt/home
 }
 
 remove_all(){
-swapoff /dev/sda2 >/dev/null 2>&1
-1>/dev/null 2>&1 fdisk /dev/sd$X <<EOF
+swapoff /dev/sd$X2 >/dev/null 2>&1
+>/dev/null 2>&1 fdisk /dev/sd$X <<EOF
 
 
 o
