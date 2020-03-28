@@ -8,7 +8,7 @@ echo
 echo "Assuming that there will be 4 partitions: boot, swap, / and /home"
 #read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
 X=a
-SIZE=2 10
+SIZE=(2 10)
 #Functionnal part :
 
 
