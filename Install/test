@@ -8,16 +8,17 @@ internet()
 	ping -c 2 www.example.com 2>&- 1>/dev/null || (echo "You're not connected to the internet. Check out your connection" && false)
 }
 
-
 partition(){
+echo "hi there"
 
- echo "Hi there!"
 }
 
 remove_all(){
-echo "An error has occured. Fix the issue and rerun this script"
+echo "An error has occured. Fix the issue and rerun this script."
 }
 
 
 
 internet && partition || remove_all
+
+
