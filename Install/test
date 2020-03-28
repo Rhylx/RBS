@@ -1,0 +1,23 @@
+#!/bin/sh
+
+export "DIST=$(./detect_distrib)$" #once installation done write this to /etc/environment
+
+
+internet()
+{
+	ping -c 2 8.8.8.8 || echo "You're not connected to the internet. Check out your connection"
+}
+
+
+partition(){
+
+ echo "Hi there!"
+}
+
+remove_all(){
+echo "An error has occured. Fix the issue and rerun this script"
+}
+
+
+
+internet && partition || remove_all

@@ -1,10 +1,88 @@
-#!/bin/bash
+#!/bin/sh
 
 # This script will auto-install Arch Linux the way I like
 
-read -p " Enter a name for the computer: " comp 
+
+#I/O part :
+
+
+
+
+
+#Functionnal part :
+
+
+
+export "DIST=$(./detect_distrib)$" #once installation done write this to /etc/environment
+
+
+internet()
+{
+	ping -c 2 8.8.8.8 || echo "You're not connected to the internet. Check out your connection"
+}
+
+
+partition(){
+
+
+}
+
+
+format(){
+
+
+
+}
+
+
+mount(){
+
+
+}
+
+
+install(){
+
+
+}
+
+gen_fstab(){
+
+
+}
+
+chrootin(){
+
+}
+
+
+root_passwd(){
+
+}
+
+create_user(){
+
+
+}
+
+grub_install(){
+
+
+}
+
+remove_all(){
+echo "An error has occured. Fix the issue and rerun this script"
+}
+
+
+
+internet && partition || remove_all
+
+
+
+read -p " Enter a name for the computer: " comp
 tzselect > tz.tmp
-read -p "Enter partionsize in gb, separated by space (swap & root): " -a SIZE
+read -p "Enter partionsize in gb, separated by space (swap & /): " -a SIZE
 
 re='^[0-9]+$'
 if ! [ ${#SIZE[@]} -eq 2 ] || ! [[ ${SIZE[0]} =~ $re ]] || ! [[ ${SIZE[1]} =~ $re ]] ; then
@@ -70,4 +148,4 @@ select yn in "Yes" "No"; do
 	Yes ) reboot;;
 	No  ) exit ;;
   	esac
-done 
+done
