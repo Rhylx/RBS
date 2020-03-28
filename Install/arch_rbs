@@ -17,7 +17,7 @@ read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
 
 
 
-export "DIST=$(./detect_distrib)$" #once installation done write this to /etc/environment
+export "DIST=$(./detect_distrib)" #once installation done write this to /etc/environment
 
 
 internet()

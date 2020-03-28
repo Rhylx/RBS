@@ -53,25 +53,25 @@ EOF
 
 
 format(){
-	mkfs.ext4 -qF /dev/sd$X4	>/dev/null 2>&1
-	mkfs.ext4 -qF /dev/sd$X3 >/dev/null 2>&1
-	mkfs.ext4 -qF /dev/sd$X1 >/dev/null 2>&1
-	mkswap /dev/sd$X2 >/dev/null 2>&1
-	swapon /dev/s$X2 >/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd${X}4	>/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd${X}3 >/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd${X}1 >/dev/null 2>&1
+	mkswap /dev/sd${X}2 >/dev/null 2>&1
+	swapon /dev/s${X}2 >/dev/null 2>&1
 }
 
 
 mount(){
 echo "hi"
-	mount /dev/sd$X3 /mnt
+	mount /dev/sd${X}3 /mnt
 	mkdir /mnt/boot
-	mount /dev/sd$X1 /mnt/boot
+	mount /dev/sd${X}1 /mnt/boot
 	mkdir /mnt/home
-	mount /dev/sd$X4 /mnt/home
+	mount /dev/sd${X}4 /mnt/home
 }
 
 remove_all(){
-swapoff /dev/sd$X2 >/dev/null 2>&1
+swapoff /dev/sd${X}2 >/dev/null 2>&1
 >/dev/null 2>&1 fdisk /dev/sd$X <<EOF
 
 
