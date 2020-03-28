@@ -52,11 +52,11 @@ EOF
 
 
 format(){
-	mkfs.ext4 /dev/sda4 1>/dev/null
-	mkfs.ext4 /dev/sda3 1>/dev/null
-	mkfs.ext4 /dev/sda1 1>/dev/null
-	mkswap /dev/sda2 1>/dev/null
-	swapon /dev/sda2 1>/dev/null
+	mkfs.ext4 /dev/sda4 2>&1 >/dev/null
+	mkfs.ext4 /dev/sda3 2>&1 >/dev/null
+	mkfs.ext4 /dev/sda1 2>&1 >/dev/null
+	mkswap /dev/sda2 2>&1 >/dev/null
+	swapon /dev/sda2 2>&1 >/dev/null
 }
 
 
@@ -70,6 +70,18 @@ echo "hi"
 }
 
 remove_all(){
+swapoff /dev/sda2 2>&1 >/dev/null
+fdisk /dev/sd$X <<EOF
+
+
+o
+n
+p
+
+
+
+w
+EOF
 echo "An error has occured. Fix the issue and rerun this script."
 }
 
