@@ -4,11 +4,10 @@
 echo -e "Here is the output of lsblk : \n"
 lsblk
 echo
-#read -p "Enter drive you want it to install on (only a if on /dev/sda): " -a X
+read -p "Enter drive you want it to install on (only a if on /dev/sda): " -a X
 echo "Assuming that there will be 4 partitions: boot, swap, / and /home"
-#read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
-X=a
-SIZE=(2 10)
+read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
+
 #Functionnal part :
 
 
