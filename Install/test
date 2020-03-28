@@ -5,7 +5,7 @@ export "DIST=$(./detect_distrib)$" #once installation done write this to /etc/en
 
 internet()
 {
-	ping -c 2 www.example.com 2>&- 1>&/dev/null || echo "You're not connected to the internet. Check out your connection" && >&2 echo "internet error"
+	ping -c 2 www.example.com 2>&- 1>&/dev/null || (echo "You're not connected to the internet. Check out your connection" && >&1 echo "internet error")
 }
 
 
