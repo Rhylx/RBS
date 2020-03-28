@@ -1,5 +1,16 @@
 #!/bin/sh
 
+#I/O part :
+
+read -p "Enter drive you want it to be installed on (only a if on /dev/sda): " -a X
+read -p "Enter partionsize in gb, separated by a space (swap & /): " -a SIZE
+
+
+
+#Functionnal part :
+
+
+
 export "DIST=$(./detect_distrib)$" #once installation done write this to /etc/environment
 
 
@@ -9,9 +20,39 @@ internet()
 }
 
 partition(){
-echo "hi there"
+cat <<EOF | fdisk /dev/sd$X
+o
+n
+p
 
+
++200M
+n
+p
+
+
++${SIZE[0]}G
+n
+p
+
+
++${SIZE[1]}G
+n
+p
+
+
+a
+1
+w
+EOF
+|| (echo "The drive either doesn't exist or there is an issue with it" && false)
 }
+
+
+format(){
+echo "hi"
+}
+
 
 remove_all(){
 echo "An error has occured. Fix the issue and rerun this script."
@@ -19,6 +60,6 @@ echo "An error has occured. Fix the issue and rerun this script."
 
 
 
-internet && partition || remove_all
+internet && partition && format || remove_all
 
 

@@ -5,7 +5,8 @@
 
 #I/O part :
 
-
+read -p "Enter drive you want it to be installed on (only a if on /dev/sda): " -a X
+read -p "Enter partionsize in gb, separated by a space (swap & /): " -a SIZE
 
 
 
@@ -21,17 +22,38 @@ internet()
 	ping -c 2 www.example.com 2>&- 1>/dev/null || (echo "You're not connected to the internet. Check out your connection" && false)
 }
 
-
 partition(){
+cat <<EOF | fdisk /dev/sd$X
+o
+n
+p
 
 
++200M
+n
+p
+
+
++${SIZE[0]}G
+n
+p
+
+
++${SIZE[1]}G
+n
+p
+
+
+a
+1
+w
+EOF
+|| (echo "The drive either doesn't exist or there is an issue with it" && false)
 }
 
 
 format(){
-
-
-
+echo "hi"
 }
 
 
@@ -76,13 +98,12 @@ echo "An error has occured. Fix the issue and rerun this script."
 
 
 
-internet && partition || remove_all
+internet && partition && format || remove_all
 
 
 
 read -p " Enter a name for the computer: " comp
 tzselect > tz.tmp
-read -p "Enter partionsize in gb, separated by space (swap & /): " -a SIZE
 
 re='^[0-9]+$'
 if ! [ ${#SIZE[@]} -eq 2 ] || ! [[ ${SIZE[0]} =~ $re ]] || ! [[ ${SIZE[1]} =~ $re ]] ; then
@@ -91,31 +112,6 @@ fi
 
 timedatectl set-ntp true
 
-cat <<EOF | fdisk /dev/sda
-o
-n
-p
-
-
-+200M
-n
-p
-
-
-+${SIZE[0]}G
-n
-p
-
-
-+${SIZE[1]}G
-n
-p
-
-
-a
-1
-w
-EOF
 partprobe
 lsblk
 
