@@ -1,14 +1,10 @@
 #!/bin/sh
 
-#I/O part :
-
 echo -e "Here is the output of lsblk : \n"
 lsblk
 echo
 read -p "Enter drive you want it to install on (only a if on /dev/sda): " -a X
 read -p "Enter partionsize in gb, separated by a space (swap & /): " -a SIZE
-
-
 
 #Functionnal part :
 
@@ -57,6 +53,41 @@ format(){
 echo "hi"
 }
 
+
+mount(){
+
+
+}
+
+
+install(){
+
+
+}
+
+gen_fstab(){
+
+
+}
+
+chrootin(){
+
+}
+
+
+root_passwd(){
+
+}
+
+create_user(){
+
+
+}
+
+grub_install(){
+
+
+}
 
 remove_all(){
 echo "An error has occured. Fix the issue and rerun this script."

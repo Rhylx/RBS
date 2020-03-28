@@ -5,13 +5,12 @@
 
 #I/O part :
 
+
 echo -e "Here is the output of lsblk : \n"
 lsblk
 echo
 read -p "Enter drive you want it to install on (only a if on /dev/sda): " -a X
 read -p "Enter partionsize in gb, separated by a space (swap & /): " -a SIZE
-
-
 
 #Functionnal part :
 
@@ -108,11 +107,6 @@ internet && partition && format || remove_all
 
 read -p " Enter a name for the computer: " comp
 tzselect > tz.tmp
-
-re='^[0-9]+$'
-if ! [ ${#SIZE[@]} -eq 2 ] || ! [[ ${SIZE[0]} =~ $re ]] || ! [[ ${SIZE[1]} =~ $re ]] ; then
-    SIZE=(12 25);
-fi
 
 timedatectl set-ntp true
 
