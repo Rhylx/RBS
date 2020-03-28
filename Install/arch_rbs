@@ -66,16 +66,16 @@ format(){
 
 
 mount(){
-	mount /dev/sda3 /mnt
-	mkdir /mnt/boot
-	mount /dev/sda1 /mnt/boot
-	mkdir /mnt/home
-	mount /dev/sda4 /mnt/home
+echo "hi"
+#	mount /dev/sda3 /mnt
+#	mkdir /mnt/boot
+#	mount /dev/sda1 /mnt/boot
+#	mkdir /mnt/home
+#	mount /dev/sda4 /mnt/home
 }
 
 
 install(){
-echo "hi"
 }
 
 gen_fstab(){
@@ -108,7 +108,7 @@ echo "An error has occured. Fix the issue and rerun this script."
 
 
 
-internet && partition && format && mount && install || remove_all
+internet && partition && format && mount || remove_all
 
 
 
