@@ -71,15 +71,17 @@ mount_part(){
 
 
 install_dist(){
-echo "hi"
+	echo "Installing Arch..."
+	pacstrap /mnt base base-devel linux linux-firmware networkmanager vim grub >/dev/null 2>&1 || (echo "Something went wrong during pacstrap step" && false)
 }
 
 gen_fstab(){
-
-
+	echo "Generating fstab..."
+	genfstab -U /mnt >> /mnt/etc/fstab
 }
 
 chrootin(){
+	echo "hi"
 
 }
 
@@ -94,7 +96,6 @@ create_user(){
 }
 
 grub_install(){
-
 
 }
 
@@ -122,8 +123,7 @@ remove_all_error(){
 }
 
 remove_all
-internet && partition && format_part && mount_part && install_dist || remove_all_error
-
+internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin || remove_all_error
 
 
 read -p " Enter a name for the computer: " comp
@@ -136,7 +136,6 @@ lsblk
 
 lsblk
 
-pacstrap /mnt base base-devel
 
 genfstab -U /mnt > /mnt/etc/fstab
 cat tz.tmp > /mnt/tzfinal.tmp
