@@ -15,18 +15,15 @@ read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
 
 #Functionnal part :
 
-
-
-export "DIST=$(./detect_distrib)" #once installation done write this to /etc/environment
-
+export DIST=$(./detect_distrib) #once installation done write this to /etc/environment
 
 internet()
 {
-	ping -c 2 www.example.com 2>&- 1>/dev/null || (echo "You're not connected to the internet. Check out your connection" && false)
+	ping -c 2 www.example.com 2>&- >/dev/null || (echo "You're not connected to the internet. Check out your connection" && false)
 }
 
 partition(){
-cat <<EOF | 2>&- 1>/dev/null fdisk /dev/sd$X || (echo "Either does the drive not exist or the partition sizes are too big" && false)
+cat <<EOF | 2>&- >/dev/null fdisk -W always /dev/sd$X || (echo "Either does the drive not exist or the partition sizes are too big" && false)
 
 
 o
@@ -57,21 +54,21 @@ EOF
 
 
 format(){
-	mkfs.ext4 /dev/sda4 1>/dev/null
-	mkfs.ext4 /dev/sda3 1>/dev/null
-	mkfs.ext4 /dev/sda1 1>/dev/null
-	mkswap /dev/sda2 1>/dev/null
-	swapon /dev/sda2 1>/dev/null
+	mkfs.ext4 -qF /dev/sd${X}4 >/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd${X}3 >/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd${X}1 >/dev/null 2>&1
+	mkswap /dev/sd${X}2 >/dev/null 2>&1
+	swapon /dev/sd${X}2 >/dev/null 2>&1
 }
 
 
 mount(){
 echo "hi"
-#	mount /dev/sda3 /mnt
-#	mkdir /mnt/boot
-#	mount /dev/sda1 /mnt/boot
-#	mkdir /mnt/home
-#	mount /dev/sda4 /mnt/home
+	mount /dev/sd${X}3 /mnt
+	mkdir /mnt/boot
+	mount /dev/sd${X}1 /mnt/boot
+	mkdir /mnt/home
+	mount /dev/sd${X}4 /mnt/home
 }
 
 

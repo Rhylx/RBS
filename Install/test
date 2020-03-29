@@ -1,6 +1,9 @@
 #!/bin/sh
 
 
+#I/O part :
+
+
 echo -e "Here is the output of lsblk : \n"
 lsblk
 echo
@@ -10,18 +13,15 @@ read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
 
 #Functionnal part :
 
-
-
-export "DIST=$(./detect_distrib)$" #once installation done write this to /etc/environment
-
+export DIST=$(./detect_distrib) #once installation done write this to /etc/environment
 
 internet()
 {
-	ping -c 2 www.example.com >/dev/null 2>&1 || (echo "You're not connected to the internet. Check out your connection" && false)
+	ping -c 2 www.example.com 2>&- >/dev/null || (echo "You're not connected to the internet. Check out your connection" && false)
 }
 
 partition(){
-cat <<EOF | 2>&- 1>/dev/null fdisk /dev/sd$X || (echo "Either does the drive not exist or the partitions sizes are too big" && false)
+cat <<EOF | 2>&- >/dev/null fdisk -W always /dev/sd$X || (echo "Either does the drive not exist or the partition sizes are too big" && false)
 
 
 o
@@ -52,11 +52,11 @@ EOF
 
 
 format(){
-	mkfs.ext4 -qF /dev/sd${X}4	>/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd${X}4 >/dev/null 2>&1
 	mkfs.ext4 -qF /dev/sd${X}3 >/dev/null 2>&1
 	mkfs.ext4 -qF /dev/sd${X}1 >/dev/null 2>&1
 	mkswap /dev/sd${X}2 >/dev/null 2>&1
-	swapon /dev/s${X}2 >/dev/null 2>&1
+	swapon /dev/sd${X}2 >/dev/null 2>&1
 }
 
 
@@ -69,23 +69,39 @@ echo "hi"
 	mount /dev/sd${X}4 /mnt/home
 }
 
+
+install(){
+}
+
+gen_fstab(){
+
+
+}
+
+chrootin(){
+
+}
+
+
+root_passwd(){
+
+}
+
+create_user(){
+
+
+}
+
+grub_install(){
+
+
+}
+
 remove_all(){
-swapoff /dev/sd${X}2 >/dev/null 2>&1
->/dev/null 2>&1 fdisk /dev/sd$X <<EOF
-
-
-o
-n
-p
-
-
-
-w
-EOF
 echo "An error has occured. Fix the issue and rerun this script."
 }
 
 
-#remove_all
 
 internet && partition && format && mount || remove_all
+
