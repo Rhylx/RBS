@@ -1,10 +1,6 @@
 #!/bin/sh
-
 # This script will auto-install Arch Linux the way I like
-
-
 #I/O part :
-
 
 echo -e "Here is the output of lsblk : \n"
 lsblk
@@ -19,11 +15,13 @@ export DIST=$(./detect_distrib) #once installation done write this to /etc/envir
 
 internet()
 {
+	echo "Testing internet connection..."
 	ping -c 2 www.example.com 2>&- >/dev/null || (echo "You're not connected to the internet. Check out your connection" && false)
 }
 
 partition(){
-cat <<EOF | 2>&- >/dev/null fdisk -W always /dev/sd$X || (echo "Either does the drive not exist or the partition sizes are too big" && false)
+	echo "Partioning the disk..."
+	cat <<EOF | 2>&- >/dev/null fdisk -W always /dev/sd$X || (echo "Either does the drive not exist or the partition sizes are too big" && false)
 
 
 o
@@ -52,8 +50,8 @@ w
 EOF
 }
 
-
 format_part(){
+	echo "Formating the disk..."
 	mkfs.ext4 -qF /dev/sd${X}4 >/dev/null 2>&1
 	mkfs.ext4 -qF /dev/sd${X}3 >/dev/null 2>&1
 	mkfs.ext4 -qF /dev/sd${X}1 >/dev/null 2>&1
@@ -61,13 +59,14 @@ format_part(){
 	swapon /dev/sd${X}2 >/dev/null 2>&1
 }
 
-
 mount_part(){
-	mount /dev/sd${X}3 /mnt
-	mkdir /mnt/boot
-	mount /dev/sd${X}1 /mnt/boot
-	mkdir /mnt/home
-	mount /dev/sd${X}4 /mnt/home
+	echo "Mounting partitions..."
+	mount /dev/sd${X}3 /mnt >/dev/null 2>&1
+	mkdir /mnt/boot >/dev/null 2>&1
+	mount /dev/sd${X}1 /mnt/boot >/dev/null 2>&1
+	mkdir /mnt/home >/dev/null 2>&1
+	mount /dev/sd${X}4 /mnt/home >/dev/null 2>&1
+	|| (echo "The size of swap+/ is bigger then the actual size available on the disk" && false)
 }
 
 
@@ -93,7 +92,6 @@ w
 EOF
 	echo "An error has occured. Fix the issue and rerun this script."
 }
-
 
 remove_all
 internet && partition && format_part && mount_part && install_dist || remove_all
