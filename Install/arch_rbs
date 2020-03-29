@@ -100,7 +100,22 @@ grub_install(){
 }
 
 remove_all(){
-echo "An error has occured. Fix the issue and rerun this script."
+	umount /mnt/home
+	umount /mnt/boot
+	umount /mnt
+	swapoff /dev/sd${X}2 >/dev/null 2>&1
+	cat << EOF | 2>&- >/dev/null fdisk -W always /dev/sd$X
+
+
+o
+n
+p
+
+
+
+w
+EOF
+	echo "An error has occured. Fix the issue and rerun this script."
 }
 
 
