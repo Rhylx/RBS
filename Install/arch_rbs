@@ -65,13 +65,12 @@ mount_part(){
 	mkdir /mnt/boot >/dev/null 2>&1
 	mount /dev/sd${X}1 /mnt/boot >/dev/null 2>&1
 	mkdir /mnt/home >/dev/null 2>&1
-	mount /dev/sd${X}4 /mnt/home >/dev/null 2>&1
-	|| (echo "The size of swap+/ is bigger then the actual size available on the disk" && false)
+	mount /dev/sd${X}4 /mnt/home >/dev/null 2>&1 || (echo "The size of swap+/ is bigger then the actual size available on the disk" && false)
 }
 
 
 install_dist(){
-	echo "Installing Arch..."
+	echo "Installing Arch, can take several minutes..."
 	pacstrap /mnt base base-devel linux linux-firmware networkmanager vim grub >/dev/null 2>&1 || (echo "Something went wrong during pacstrap step" && false)
 }
 
@@ -122,8 +121,7 @@ remove_all_error(){
 	echo "An error has occured. Fix the issue and rerun this script."
 }
 
-remove_all
-internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin || remove_all_error
+remove_all ; internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin || remove_all_error
 
 
 read -p " Enter a name for the computer: " comp
