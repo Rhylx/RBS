@@ -21,7 +21,7 @@ internet()
 }
 
 partition(){
-cat <<EOF | >/dev/null 2>&1 fdisk /dev/sd$X || (echo "Either does the drive not exist or the partition sizes are too big" && false)
+cat <<EOF | 2>&- 1>/dev/null fdisk /dev/sd$X || (echo "Either does the drive not exist or the partitions sizes are too big" && false)
 
 
 o
