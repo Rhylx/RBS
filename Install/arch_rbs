@@ -8,6 +8,9 @@ echo
 read -p "Enter drive you want it to install on (only a if on /dev/sda): " -a X
 echo "Assuming that there will be 4 partitions: boot, swap, / and /home"
 read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
+tzselect > tz.tmp
+read -p " Enter a name for the computer: " comp
+read -p " Enter a name for the main user: " username
 
 #Functionnal part :
 
@@ -80,22 +83,36 @@ gen_fstab(){
 }
 
 chrootin(){
-	echo "hi"
-
-}
-
-
-root_passwd(){
-
-}
-
-create_user(){
-
-
+	echo "Manage locales..."
+	mv tz.tmp /mnt/tz.tmp
+	arch-chroot /mnt
+	ln -sf /usr/share/zoneinfo/$(cat tz.tmp) /etc/localtime
+	rm tz.tmp
+	hwclock --systohc
+	echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+	locale-gen >/dev/null
+	echo "LANG=en_US.UTF-8" >> /etc/locale.conf
+	echo $comp >> /etc/hostname
 }
 
 grub_install(){
+	grub-install --target=i386-pc /dev/sd$X >/dev/null
+	grub-mkconfig -o /boot/grub/grub.cfg >/dev/null
+}
 
+
+passwd_infty(){
+	passwd $1 || passwd_infty $1
+}
+root_passwd(){
+	echo "Create the root password: "
+	passwd_infty
+}
+
+create_user(){
+	useradd -m $(username)
+	echo "Create password for $(username)"
+	passwd_infty $(username)
 }
 
 remove_all(){
@@ -121,32 +138,4 @@ remove_all_error(){
 	echo "An error has occured. Fix the issue and rerun this script."
 }
 
-remove_all ; internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin || remove_all_error
-
-
-read -p " Enter a name for the computer: " comp
-tzselect > tz.tmp
-
-timedatectl set-ntp true
-
-partprobe
-lsblk
-
-lsblk
-
-
-genfstab -U /mnt > /mnt/etc/fstab
-cat tz.tmp > /mnt/tzfinal.tmp
-rm tz.tmp
-curl https://raw.githubusercontent.com/Rhylx/RBS/master/chroot_rbs > /mnt/chroot.sh && arch-chroot /mnt bash chroot.sh && rm /mnt/chroot.sh
-
-echo "$comp" > /mnt/etc/hostname
-
-
-echo  "Reboot computer?"
-select yn in "Yes" "No"; do
-	case $yn in
-	Yes ) reboot;;
-	No  ) exit ;;
-  	esac
-done
+remove_all ; internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin && grub_install && root_passwd && create_user || remove_all_error
