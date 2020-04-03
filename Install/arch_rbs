@@ -9,8 +9,8 @@ read -p "Enter drive you want it to install on (only a if on /dev/sda): " -a X
 echo "Assuming that there will be 4 partitions: boot, swap, / and /home"
 read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
 tzselect > tz.tmp
-read -p " Enter a name for the computer: " comp
-read -p " Enter a name for the main user: " username
+read -p "Enter a name for the computer: " comp
+read -p "Enter a name for the main user: " username
 echo "Let the fun start!!!"
 #Functionnal part :
 
@@ -84,21 +84,23 @@ gen_fstab(){
 
 chrootin(){
 	echo "Manage locales..."
-	mv tz.tmp /mnt/tz.tmp
-	arch-chroot /mnt
+	arch-chroot /mnt << EOF
 	ln -sf /usr/share/zoneinfo/$(cat tz.tmp) /etc/localtime
-	rm tz.tmp
 	hwclock --systohc
 	echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 	locale-gen >/dev/null
 	echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 	echo $comp >> /etc/hostname
+EOF
+	rm tz.tmp
 }
 
 grub_install(){
 	echo "Installing grub, it takes a few minutes..."
+	arch-chroot /mnt << EOF
 	grub-install --target=i386-pc /dev/sd$X >/dev/null 2>&1
 	grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1
+EOF
 }
 
 
@@ -107,13 +109,17 @@ passwd_infty(){
 }
 root_passwd(){
 	echo "Create the root password: "
+	arch-chroot /mnt <<EOF
 	passwd_infty
+EOF
 }
 
 create_user(){
+	arch-chroot /mnt <<EOF
 	useradd -m $(username)
 	echo "Create password for $(username)"
 	passwd_infty $(username)
+EOF
 }
 
 remove_all(){
