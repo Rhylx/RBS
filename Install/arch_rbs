@@ -97,28 +97,24 @@ EOF
 
 grub_install(){
 	echo "Installing grub, it takes a few minutes..."
-	arch-chroot /mnt << EOF
+	arch-chroot /mnt /bin/sh << EOF
 	grub-install --target=i386-pc /dev/sd$X >/dev/null 2>&1
 	grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1
 EOF
 }
 
-
-passwd_infty(){
-	passwd $1 || passwd_infty $1
-}
 root_passwd(){
 	echo "Create the root password: "
-	arch-chroot /mnt <<EOF
-	passwd_infty
+	arch-chroot /mnt /bin/sh <<EOF
+	./.passwd_infty
 EOF
 }
 
 create_user(){
-	arch-chroot /mnt <<EOF
+	arch-chroot /mnt /bin/sh <<EOF
 	useradd -m $(username)
 	echo "Create password for $(username)"
-	passwd_infty $(username)
+	./.passwd_infty $(username)
 EOF
 }
 
