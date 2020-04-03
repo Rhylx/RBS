@@ -84,7 +84,7 @@ gen_fstab(){
 
 chrootin(){
 	echo "Manage locales..."
-	arch-chroot /mnt << EOF
+	arch-chroot /mnt /bin/sh << EOF
 	ln -sf /usr/share/zoneinfo/$(cat tz.tmp) /etc/localtime
 	hwclock --systohc
 	echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
