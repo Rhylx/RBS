@@ -105,17 +105,17 @@ EOF
 
 root_passwd(){
 	echo "Create the root password: "
-	arch-chroot /mnt /bin/sh <<EOF
-	./.passwd_infty
-EOF
+	cp ./.passwd_infty /mnt
+	arch-chroot /mnt ./.passwd_infty
 }
 
 create_user(){
 	arch-chroot /mnt /bin/sh <<EOF
-	useradd -m $(username)
-	echo "Create password for $(username)"
-	./.passwd_infty $(username)
+	useradd -m ${username}
+	echo "Create password for ${username}"
 EOF
+	arch-chroot /mnt ./.passwd_infty ${username}
+	rm /mnt/.passwd_infty
 }
 
 remove_all(){
