@@ -109,7 +109,6 @@ passwd_infty(){
 
 root_passwd(){
 	echo "Create the root password: "
-	cp ./.passwd_infty /mnt
 	passwd_infty
 }
 
