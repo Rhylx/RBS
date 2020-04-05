@@ -1,7 +1,0 @@
-#!/bin/sh
-
-passwd_infty(){
-	passwd $1 || passwd_infty $1
-}
-
-passwd_infty

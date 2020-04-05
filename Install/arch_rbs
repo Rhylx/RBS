@@ -103,23 +103,25 @@ grub_install(){
 EOF
 }
 
+passwd_infty(){
+	passwd -R /mnt $1 || passwd_infty $1
+}
+
 root_passwd(){
 	echo "Create the root password: "
 	cp ./.passwd_infty /mnt
-	arch-chroot /mnt ./.passwd_infty
+	passwd_infty
 }
 
 create_user(){
-	arch-chroot /mnt /bin/sh <<EOF
-	useradd -m ${username}
+	arch-chroot /mnt useradd -m ${username}
 	echo "Create password for ${username}"
-EOF
-	arch-chroot /mnt ./.passwd_infty ${username}
-	rm /mnt/.passwd_infty
+	passwd_infty ${username}
 }
 
 well_done(){
-	echo "Everything has been installed.\nYou should restart, remove the livecd and run the script called rbs !!:D"
+	echo "Everything has been installed."
+	echo "You should restart, remove the livecd and run the script called rbs !!:D"
 }
 
 remove_all(){
