@@ -22,17 +22,17 @@ installer(){
 }
 
 refresh_keyrings(){
-	sudo pacman -Sy archlinux-keyring >/dev/null 2>&1
+	sudo pacman --noconfirm --needed -Sy archlinux-keyring >/dev/null 2>&1
 }
 
 install_yay(){
-	[ -f "/usr/bin/$aurhelper"] || (
-	cd /tmp
-	rm -rf /tmp/"$aurhelper"*
+	[ -f "/usr/bin/$aurhelper" ] || (
+	cd /tmp/tmprbs
+	rm -rf /tmp/tmprbs/"$aurhelper"*
 	curl -sO https://aur.archlinux.org/cgit/aur.git/snapshot/"$aurhelper".tar.gz &&
-	sudo  tar -xvf "$aurhelper".tar.gz >/dev/null 2>&1 &&
+	tar -xvf "$aurhelper".tar.gz >/dev/null 2>&1 &&
 	cd "$aurhelper" &&
-	sudo makepkg --noconfirm -si >/dev/null 2>&1
+	makepkg --noconfirm -si >/dev/null 2>&1
 	cd /tmp || return)
 }
 
@@ -61,7 +61,7 @@ remove_all(){
 
 
 
-refresh_keyrings && install_yay && clear_tmp || remove_all
+refresh_keyrings && install_yay && clear_tmprbs || remove_all
 
 
 

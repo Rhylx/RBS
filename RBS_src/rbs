@@ -12,10 +12,17 @@
 # Try to do these steps manually and write it all again...
 
 mkdir /tmp/tmprbs
-read -p "Which aurhelper would you like to install (default is yay)" aurhelper
+read -p "Which aurhelper would you like to install (default is yay): " aurhelper
 
 
 [ -z "$aurhelper" ] && aurhelper="yay"
+
+internet()
+{
+	echo "Testing internet connection..."
+	ping -c 2 www.example.com 2>&- >/dev/null || (echo "You're not connected to the internet. Check out that NetworkManager is started" && false)
+}
+
 
 installer(){
 	sudo pacman --noconfirm --needed -S "$*" >/dev/null 2>&1
@@ -55,13 +62,13 @@ clear_tmprbs(){
 
 
 remove_all(){
-	echo "An error occured"
+	echo "An error has occured. Fix the issue and rerun this script."
 	clear_tmprbs
 }
 
 
 
-refresh_keyrings && install_yay && clear_tmp || remove_all
+internet && refresh_keyrings && install_yay && clear_tmp || remove_all
 
 
 
