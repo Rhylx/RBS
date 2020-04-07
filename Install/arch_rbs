@@ -14,7 +14,7 @@ read -p "Enter a name for the main user: " username
 echo "Let the fun start!!!"
 #Functionnal part :
 
-export DIST=$(./detect_distrib) #once installation done write this to /etc/environment
+DIST=$(./detect_distrib) #once installation done write this to /etc/environment
 
 internet()
 {
@@ -74,7 +74,7 @@ mount_part(){
 
 install_dist(){
 	echo "Installing Arch, can take several minutes..."
-	pacstrap /mnt base base-devel linux linux-firmware networkmanager vim grub >/dev/null 2>&1 || (echo "Something went wrong during pacstrap step" && false)
+	pacstrap /mnt base base-devel linux linux-firmware dhcp networkmanager vim grub >/dev/null 2>&1 || (echo "Something went wrong during pacstrap step" && false)
 }
 
 gen_fstab(){
@@ -118,9 +118,18 @@ create_user(){
 	passwd_infty ${username}
 }
 
+setting_sudo(){
+	echo "Finally setting up sudoers file, will be easier for rbs"
+	arch-chroot /mnt /bin/sh << EOF
+	echo "%${username} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+EOF
+}
+
 well_done(){
-	echo "Everything has been installed."
-	echo "You should restart, remove the livecd and run the script called rbs !!:D"
+	clear
+	echo "The distribution has been installed."
+	echo "You should restart, remove the livecd, log in as ${username} and run the script called rbs !!:D"
+	echo "P.S.: Normally, internet won't work on the fresh install because you need to enable NetworkManager"
 }
 
 remove_all(){
@@ -146,7 +155,7 @@ remove_all_error(){
 	echo "An error has occured. Fix the issue and rerun this script."
 }
 
-remove_all ; internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin && grub_install && root_passwd && create_user && well_done || remove_all_error
+remove_all ; internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin && grub_install && setting_sudo && root_passwd && create_user && well_done || remove_all_error
 
 # Script finished for arch installation process
 # TO DO :
