@@ -1,0 +1,68 @@
+#!/bin/sh
+
+# This is the main script of RBS : it will auto-install and configure all programs that I daily use
+
+# Is first meant for arch, but will then be extended to void and debian
+# Goal of this script :
+#
+# -> Install all programs from prog.csv
+# -> Install keyboard layout
+# -> Installing dotfiles (which of course need to be reviewed and updated...)
+# -> Setup doas (instead of sudo)
+# Try to do these steps manually and write it all again...
+
+mkdir /tmp/tmprbs
+read -p "Which aurhelper would you like to install (default is yay)" aurhelper
+
+
+[ -z "$aurhelper" ] && aurhelper="yay"
+
+installer(){
+	sudo pacman --noconfirm --needed -S "$*" >/dev/null 2>&1
+}
+
+refresh_keyrings(){
+	sudo pacman -Sy archlinux-keyring >/dev/null 2>&1
+}
+
+install_yay(){
+	[ -f "/usr/bin/$aurhelper"] || (
+	cd /tmp
+	rm -rf /tmp/"$aurhelper"*
+	curl -sO https://aur.archlinux.org/cgit/aur.git/snapshot/"$aurhelper".tar.gz &&
+	sudo  tar -xvf "$aurhelper".tar.gz >/dev/null 2>&1 &&
+	cd "$aurhelper" &&
+	sudo makepkg --noconfirm -si >/dev/null 2>&1
+	cd /tmp || return)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+clear_tmprbs(){
+	sudo rm -rf /tmp/tmprbs >/dev/null 2>&1
+}
+
+
+remove_all(){
+	echo "An error occured"
+	clear_tmprbs
+}
+
+
+
+refresh_keyrings && install_yay && clear_tmp || remove_all
+
+
+
+

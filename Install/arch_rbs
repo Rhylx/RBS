@@ -129,7 +129,8 @@ well_done(){
 	clear
 	echo "The distribution has been installed."
 	echo "You should restart, remove the livecd, log in as ${username} and run the script called rbs !!:D"
-	echo "P.S.: Normally, internet won't work on the fresh install because you need to enable NetworkManager"
+	echo "P.S.: Normally, internet won't work on the fresh install"
+	echo "You need to start and enable NetworkManager"
 }
 
 remove_all(){
