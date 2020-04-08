@@ -11,11 +11,22 @@
 # -> Setup doas (instead of sudo)
 # Try to do these steps manually and write it all again...
 
+
 mkdir /tmp/tmprbs
-read -p "Which aurhelper would you like to install (default is yay)" aurhelper
+read -p "Which aurhelper would you like to install (default is yay): " aurhelper
 
 
 [ -z "$aurhelper" ] && aurhelper="yay"
+
+internet()
+{
+	echo "Testing internet connection..."
+	ping -c 2 www.example.com 2>&- >/dev/null || (echo "You're not connected to the internet. Check out that NetworkManager is started" && false)
+}
+
+pimp_pacman(){
+	grep "^Color" /etc/pacman.conf >/dev/null || sed -i "s/^#Color$/Color/" /etc/pacman.conf
+}
 
 installer(){
 	sudo pacman --noconfirm --needed -S "$*" >/dev/null 2>&1
@@ -33,10 +44,17 @@ install_yay(){
 	tar -xvf "$aurhelper".tar.gz >/dev/null 2>&1 &&
 	cd "$aurhelper" &&
 	makepkg --noconfirm -si >/dev/null 2>&1
-	cd /tmp || return)
+	cd /tmp/tmprbs)
 }
 
-
+install_progs(){
+	while IFS=, read -r tag prog comment; do
+		case "$tag" in
+			"A") sudo $aurhelper -S --noconfirm $prog ;; #>/dev/null 2>&1 ;;
+			*) installer $prog ;; #>/dev/null 2>&1 ;;
+		esac
+	done < progs.csv
+}
 
 
 
@@ -61,7 +79,9 @@ remove_all(){
 
 
 
-refresh_keyrings && install_yay && clear_tmprbs || remove_all
+internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && clear_tmprbs || remove_all
+
+
 
 
 
