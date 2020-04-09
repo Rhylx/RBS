@@ -45,13 +45,13 @@ install_yay(){
 }
 
 writing_bold_green(){
-	tput bold ; tput setaf2
+	tput bold ; tput setaf 2
 	echo $1
 	tput sgr0
 }
 
 writing_bold_red(){
-	tput bold ; tput setaf1
+	tput bold ; tput setaf 1
 	echo $1
 	tput sgr0
 }
