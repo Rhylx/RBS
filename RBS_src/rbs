@@ -57,14 +57,16 @@ writing_bold_red(){
 }
 
 installer(){
-	echo -n "Installing $1$ ...    "
+	echo -n "Installing $1 ...		"
 	sudo pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 && writing_bold_green "[DONE]" || writing_bold_red "[ERROR]"
 }
 
 
 aur_installer(){
-	echo -n "Installing $1$ ...    "
+	pacman -Qqm | grep "^$1$" >/dev/null 2>&1 && return
+	echo -n "Installing $1 ...		"
 	$aurhelper --noconfirm -S "$1" >/dev/null 2>&1 && writing_bold_green "[DONE]" || writing_bold_red "[ERROR]"
+
 }
 
 install_progs(){
