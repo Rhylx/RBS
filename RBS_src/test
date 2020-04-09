@@ -5,7 +5,8 @@
 # Is first meant for arch, but will then be extended to void and debian
 # Goal of this script :
 #
-# -> Install all programs from prog.csv
+# -> Install all programs from prog.csv:
+#       graphically try to do something like \green{INSTALLATION CONFIRMED}/\red{ERROR} for each soft
 # -> Install keyboard layout
 # -> Installing dotfiles (which of course need to be reviewed and updated...)
 # -> Setup doas (instead of sudo)
@@ -28,10 +29,6 @@ pimp_pacman(){
 	grep "^Color" /etc/pacman.conf >/dev/null || sed -i "s/^#Color$/Color/" /etc/pacman.conf
 }
 
-installer(){
-	sudo pacman --noconfirm --needed -S "$*" >/dev/null 2>&1
-}
-
 refresh_keyrings(){
 	sudo pacman --noconfirm --needed -Sy archlinux-keyring >/dev/null 2>&1
 }
@@ -47,11 +44,34 @@ install_yay(){
 	cd /tmp/tmprbs)
 }
 
+writing_bold_green(){
+	tput bold ; tput setaf2
+	echo $1
+	tput sgr0
+}
+
+writing_bold_red(){
+	tput bold ; tput setaf1
+	echo $1
+	tput sgr0
+}
+
+installer(){
+	echo -n "Installing $1$ ...    "
+	sudo pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 && writing_bold_green "[DONE]" || writing_bold_red "[ERROR]"
+}
+
+
+aur_installer(){
+	echo -n "Installing $1$ ...    "
+	$aurhelper --noconfirm -S "$1" >/dev/null 2>&1 && writing_bold_green "[DONE]" || writing_bold_red "[ERROR]"
+}
+
 install_progs(){
 	while IFS=, read -r tag prog comment; do
 		case "$tag" in
-			"A") sudo $aurhelper -S --noconfirm $prog ;; #>/dev/null 2>&1 ;;
-			*) installer $prog ;; #>/dev/null 2>&1 ;;
+			"A") aur_installer $prog ;;
+			*) installer $prog ;;
 		esac
 	done < progs.csv
 }
@@ -80,9 +100,5 @@ remove_all(){
 
 
 internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && clear_tmprbs || remove_all
-
-
-
-
 
 
