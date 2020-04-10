@@ -30,11 +30,13 @@ pimp_pacman(){
 }
 
 refresh_keyrings(){
+	echo "Refreshing keyrings..."
 	sudo pacman --noconfirm --needed -Sy archlinux-keyring >/dev/null 2>&1
 }
 
 install_yay(){
 	[ -f "/usr/bin/$aurhelper" ] || (
+	echo "Manually installing $aurhelper ..."
 	cd /tmp/tmprbs
 	rm -rf /tmp/tmprbs/"$aurhelper"*
 	curl -sO https://aur.archlinux.org/cgit/aur.git/snapshot/"$aurhelper".tar.gz &&
@@ -44,28 +46,26 @@ install_yay(){
 	cd /tmp/tmprbs)
 }
 
+# Thanks to this webpage (http://xn--rpa.cc/irl/term.html), I'm able to use ANSI escape sequences.
 writing_bold_green(){
-	tput bold ; tput setaf 2
-	echo $1
-	tput sgr0
+	printf "\e[12D\e[K\e[1;38;5;48m[DONE]\e[m\n" # 3 escape seq meaning: back 12 columns,
+						     # erase end of line and then write in bold
+						     # and green [DONE] and go back to the line
 }
 
 writing_bold_red(){
-	tput bold ; tput setaf 1
-	echo $1
-	tput sgr0
+	printf "\e[12D\e[K\e[1;38;5;196m[ERROR]\e[m\n"
 }
 
 installer(){
-	echo -n "Installing $1 ...		"
-	sudo pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 && writing_bold_green "[DONE]" || writing_bold_red "[ERROR]"
+	printf '%s%*s\n' "Installing $1 ... " "$((($(tput cols) / 2) - ${#message}))" '[INSTALLING]'
+	sudo pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 }
-
 
 aur_installer(){
 	pacman -Qqm | grep "^$1$" >/dev/null 2>&1 && return
-	echo -n "Installing $1 ...		"
-	$aurhelper --noconfirm -S "$1" >/dev/null 2>&1 && writing_bold_green "[DONE]" || writing_bold_red "[ERROR]"
+	printf '%s%*s\n' "Installing $1 ... " "$((($(tput cols) / 2) - ${#message}))" '[INSTALLING]'
+	$aurhelper --noconfirm -S "$1" >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 
 }
 
