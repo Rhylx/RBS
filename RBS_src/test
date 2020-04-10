@@ -58,13 +58,15 @@ writing_bold_red(){
 }
 
 installer(){
-	printf '%s%*s\n' "Installing $1 ... " "$((($(tput cols) / 2) - ${#message}))" '[INSTALLING]'
+	install_mess="Installing $1 ... "
+	printf '%s%*s' $install_mess "$((($(tput cols) / 2) - ${#install_mess}))" '[INSTALLING]'
 	sudo pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 }
 
 aur_installer(){
 	pacman -Qqm | grep "^$1$" >/dev/null 2>&1 && return
-	printf '%s%*s\n' "Installing $1 ... " "$((($(tput cols) / 2) - ${#message}))" '[INSTALLING]'
+	install_mess="Installing $1 ... "
+	printf '%s%*s' $install_mess "$((($(tput cols) / 2) - ${#install_mess}))" '[INSTALLING]'
 	$aurhelper --noconfirm -S "$1" >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 
 }
@@ -101,6 +103,6 @@ remove_all(){
 
 
 
-internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && clear_tmprbs || remove_all
+clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && clear_tmprbs || remove_all
 
 
