@@ -59,14 +59,16 @@ writing_bold_red(){
 
 installer(){
 	install_mess="Installing $1 ... "
-	printf '%s%*s' $install_mess "$((($(tput cols) / 2) - ${#install_mess}))" '[INSTALLING]'
+	printf '%s%*s' $install_mess "$((($(tput cols) / 2) - ${#install_mess}))"
+	printf "[INTALLING]"
 	sudo pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 }
 
 aur_installer(){
 	pacman -Qqm | grep "^$1$" >/dev/null 2>&1 && return
 	install_mess="Installing $1 ... "
-	printf '%s%*s' $install_mess "$((($(tput cols) / 2) - ${#install_mess}))" '[INSTALLING]'
+	printf '%s%*s' $install_mess "$((($(tput cols) / 2) - ${#install_mess}))"
+	printf "[INSTALLING]"
 	$aurhelper --noconfirm -S "$1" >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 
 }
