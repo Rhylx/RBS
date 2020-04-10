@@ -5,8 +5,6 @@
 # Is first meant for arch, but will then be extended to void and debian
 # Goal of this script :
 #
-# -> Install all programs from prog.csv:
-#       graphically try to do something like \green{INSTALLATION CONFIRMED}/\red{ERROR} for each soft
 # -> Install keyboard layout
 # -> Installing dotfiles (which of course need to be reviewed and updated...)
 # -> Setup doas (instead of sudo)
@@ -59,15 +57,15 @@ writing_bold_red(){
 
 installer(){
 	install_mess="Installing $1 ... "
-	printf '%s%*s' $install_mess "$((($(tput cols) / 2) - ${#install_mess}))"
-	printf "[INTALLING]"
+	printf '%s%*s' "$install_mess" "$((($(tput cols) / 2) - ${#install_mess}))"
+	printf "[INSTALLING]"
 	sudo pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 }
 
 aur_installer(){
 	pacman -Qqm | grep "^$1$" >/dev/null 2>&1 && return
 	install_mess="Installing $1 ... "
-	printf '%s%*s' $install_mess "$((($(tput cols) / 2) - ${#install_mess}))"
+	printf '%s%*s' "$install_mess" "$((($(tput cols) / 2) - ${#install_mess}))"
 	printf "[INSTALLING]"
 	$aurhelper --noconfirm -S "$1" >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 
