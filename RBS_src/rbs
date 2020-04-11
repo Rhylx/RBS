@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # This is the main script of RBS : it will auto-install and configure all programs that I daily use
+# Thanks to this webpage (http://xn--rpa.cc/irl/term.html), I'm able to use ANSI escape sequences.
 
 # Is first meant for arch, but will then be extended to void and debian
 # Goal of this script :
@@ -44,11 +45,9 @@ install_yay(){
 	cd /tmp/tmprbs)
 }
 
-# Thanks to this webpage (http://xn--rpa.cc/irl/term.html), I'm able to use ANSI escape sequences.
+# 3 escape seq meaning: back 12 columns, erase end of line and then write in bold  and green [DONE] and go back to the line
 writing_bold_green(){
-	printf "\e[12D\e[K\e[1;38;5;48m[DONE]\e[m\n" # 3 escape seq meaning: back 12 columns,
-						     # erase end of line and then write in bold
-						     # and green [DONE] and go back to the line
+	printf "\e[12D\e[K\e[1;38;5;48m[DONE]\e[m\n"
 }
 
 writing_bold_red(){
@@ -79,8 +78,6 @@ install_progs(){
 		esac
 	done < progs.csv
 }
-
-
 
 
 
