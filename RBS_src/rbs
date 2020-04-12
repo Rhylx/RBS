@@ -8,8 +8,6 @@
 #
 # -> Install keyboard layout
 # -> Installing dotfiles (which of course need to be reviewed and updated...)
-# -> Setup doas (instead of sudo)
-# Try to do these steps manually and write it all again...
 
 
 mkdir /tmp/tmprbs
@@ -26,7 +24,7 @@ internet()
 
 pimp_pacman(){
 	grep "^Color" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
-	sed -i "s/-j2/-j$(nproc)/;s/^#MAKEFLAGS/MAKEFLAGS/" /etc/makepkg.conf
+	sudo sed -i "s/-j2/-j$(nproc)/;s/^#MAKEFLAGS/MAKEFLAGS/" /etc/makepkg.conf
 }
 
 refresh_keyrings(){
@@ -80,19 +78,23 @@ install_progs(){
 	done < progs.csv
 }
 
+remove_noise(){
+	echo "Removing the beep sound..."
+	rmmod pcspkr
+	echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf
+}
 
-
-
-
-
-
-
-
+insert_dotfiles(){
+	echo "Inserting dotfiles..."
+	git clone https://github.com/Rhylx/.dotfiles /tmp/tmprbs >/dev/null 2>&1
+}
 
 clear_tmprbs(){
 	sudo rm -rf /tmp/tmprbs >/dev/null 2>&1
+	echo "Setting back sudoers to normal"
+	sudo sed -i "/#RBS/d" /etc/sudoers
+	echo "%wheel ALL=(ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/systemctl suspend,/usr/bin/mount,/usr/bin/umount,/usr/bin/pacman -Syu,/usr/bin/pacman -Syyu,/usr/bin/systemctl restart NetworkManager,/usr/bin/pacman -Syyu --noconfirm,/usr/bin/loadkeys,/usr/bin/yay" | sudo tee -a /etc/sudoers >/dev/null
 }
-
 
 remove_all(){
 	echo "An error occured"
@@ -101,98 +103,9 @@ remove_all(){
 
 
 
-clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && clear_tmprbs || remove_all
+clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && remove_noise && insert_dotfiles && clear_tmprbs || remove_all
 
+# Main structure of script is finished for arch. Now, there remains to rebuild all soft and config files # and to add then slowly in prog.csv...
 
+## Also to do : adapt this script to void and debian...
 
-
-
-
-
-
-
-
-
-
-
-#############################################################################
-# Old script
-
-read -p "Enter the username of your account: " name
-read -sp "Enter a password for your account: " pass1
-printf '\n'
-read -sp "Retype your password: " pass2
-printf '\n'
-
-while [ $pass1 != $pass2 ]
-do
-	read -sp "Passwords do not match. Enter your password again: " pass1
-	printf '\n'
-	read -sp "Retype your password: " pass2
-	printf '\n'
-done
-
-echo -e "Adding user "$name""
-useradd -m -g wheel -s /bin/bash $name >/dev/tty6
-echo "$name:$pass1" | chpasswd >/dev/tty6
-
-
-echo "Getting program list..."
-curl https://raw.githubusercontent.com/Rhylx/RBS/master/progs.csv > /tmp/progs.csv
-rm /tmp/aur_queue &>/dev/tty6
-count=$(cat /tmp/progs.csv | wc -l)
-n=0
-installProgram() { ( (pacman --noconfirm --needed -S $1 &>/dev/tty6 && echo $1 installed.) || echo $1 >> /tmp/aur_queue) || echo $1 >> /tmp/rbs_failed ;}
-
-for x in $(cat /tmp/progs.csv | awk -F, {'print $1'})
-do
-	n=$((n+1))
-	echo "Downloading and installing program $n out of $count: $x..."
-	echo "The first programs will take more time due to dependencies. You can watch the output on tty6."
-	printf '\n'
-	printf '\n'
-	installProgram $x >/dev/tty6
-done
-
-echo "Preparing the user script (sudoers)..."
-curl https://raw.githubusercontent.com/Rhylx/RBS/master/sudoers_installation > /etc/sudoers
-cd /tmp
-curl https://raw.githubusercontent.com/Rhylx/RBS/master/rbs_user > /tmp/rbs_user
-sudo -u $name bash /tmp/rbs_user
-rm -f /tmp/rbs_user
-
-echo "Initialising git "
-git config --global user.email "redbull11570@gmail.com"
-git config --global user.name "Rhylx"
-
-echo "Installing st from source..."
-cd /tmp
-rm -rf st
-git clone --depth 1 https://github.com/Rhylx/st.git
-cd st
-make
-make install
-cd /tmp
-
-echo "Initialising shortcut-sync"
-/home/$(whoami)/.scripts/shortcuts.sh
-
-echo "Enabling Network Manager..."
-systemctl enable NetworkManager
-systemctl start NetworkManager
-
-echo "Enabling i8kutils for fan..."
-echo "set config(auto)	1" >> /etc/i8kutils/i8kmon.conf
-systemctl enable i8kmon
-systemctl start i8kmon
-
-echo "Configuring lux for brightness..."
-lux
-
-echo "Getting rid of that retarded error beep sound..."
-rmmod pcspkr
-echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf
-echo " Updating sudoers ( end of installation ): "
-curl https://raw.githubusercontent.com/Rhylx/RBS/master/sudoers > /etc/sudoers
-
-echo "Installation finished. To start i3, run command : startx"
