@@ -34,7 +34,7 @@ refresh_keyrings(){
 
 install_yay(){
 	[ -f "/usr/bin/$aurhelper" ] || (
-	echo "Manually installing ${aurhelper},this may take several minutes..."
+	echo "Manually installing ${aurhelper}, this may take several minutes..."
 	cd /tmp/tmprbs
 	rm -rf /tmp/tmprbs/"$aurhelper"*
 	curl -sO https://aur.archlinux.org/cgit/aur.git/snapshot/"$aurhelper".tar.gz &&
