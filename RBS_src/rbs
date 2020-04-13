@@ -81,7 +81,7 @@ install_progs(){
 remove_noise(){
 	echo "Removing the beep sound..."
 	sudo rmmod pcspkr
-	sudo echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf
+	echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf >/dev/null
 }
 
 insert_dotfiles(){
