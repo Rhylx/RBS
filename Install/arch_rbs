@@ -159,7 +159,7 @@ remove_all_error(){
 	echo "An error has occured. Fix the issue and rerun this script."
 }
 
-clear ; remove_all ; internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin && grub_install && setting_sudo && root_passwd && create_user && transition_rbs && well_done || remove_all_error
+clear ; remove_all && internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin && grub_install && setting_sudo && root_passwd && create_user && transition_rbs && well_done || remove_all_error
 
 
 # Script finished for arch installation process
