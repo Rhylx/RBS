@@ -122,7 +122,7 @@ create_user(){
 setting_sudo(){
 	echo "Finally setting up sudoers file, will be easier for rbs..."
 	arch-chroot /mnt /bin/sh << EOF
-	echo "%${username} ALL=(ALL) NOPASSWD: ALL #RBS" >> /etc/sudoers
+	echo "%wheel ALL=(ALL) NOPASSWD: ALL #RBS" >> /etc/sudoers
 EOF
 }
 
