@@ -109,7 +109,7 @@ passwd_infty(){
 }
 
 root_passwd(){
-	echo "Create the root password: "
+	echo "Create the root password"
 	passwd_infty
 }
 
@@ -120,7 +120,7 @@ create_user(){
 }
 
 setting_sudo(){
-	echo "Finally setting up sudoers file, will be easier for rbs"
+	echo "Finally setting up sudoers file, will be easier for rbs..."
 	arch-chroot /mnt /bin/sh << EOF
 	echo "%${username} ALL=(ALL) NOPASSWD: ALL #RBS" >> /etc/sudoers
 EOF
@@ -132,7 +132,7 @@ transition_rbs(){
 
 well_done(){
 	clear
-	echo "The distribution has been installed."
+	echo "The distribution has been correctly installed !!"
 	echo "You should restart, remove the livecd, log in as ${username} and run the script called rbs !!:D"
 }
 
