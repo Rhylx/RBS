@@ -69,13 +69,38 @@ aur_installer(){
 
 }
 
+make_git_inst(){
+	pname="$(basename $1)"
+	install_mess="Installing ${pname}... "
+	printf '%s%*s' "$install_mess" "$((($(tput cols) / 2) - ${#install_mess}))"
+	printf "[INSTALLING]"
+	cd /tmp/tmprbs
+	sudo git clone --depth 1 $1 >/dev/null 2>&1
+	cd $pname
+	make >/dev/null 2>&1
+	sudo make install >/dev/null 2>&1 && writing_bold_green || writing_bold_red
+}
+
 install_progs(){
 	while IFS=, read -r tag prog comment; do
 		case "$tag" in
 			"A") aur_installer $prog ;;
+			"G") make_git_inst $prog ;;
 			*) installer $prog ;;
 		esac
 	done < progs.csv
+}
+
+manually_inst_dwm(){
+	install_mess="Installing dwm... "
+	printf '%s%*s' "$install_mess" "$((($(tput cols) / 2) - ${#install_mess}))"
+	printf "[INSTALLING]"
+	cd tmp/tmprbs
+	sudo git clone --depth 1 https://github.com/LukeSmithxyz/dwm >/dev/null 2>&1
+	cd dwm
+	sed -i "/\/share\/dwm/d" Makefile
+	make >/dev/null 2>&1
+	sudo make install >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 }
 
 remove_noise(){
@@ -104,7 +129,7 @@ remove_all(){
 
 
 
-clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && remove_noise && insert_dotfiles && clear_tmprbs || remove_all
+clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && manually_inst_dwm && remove_noise && insert_dotfiles && clear_tmprbs || remove_all
 
 # Main structure of script is finished for arch. Now, there remains to rebuild all soft and config files # and to add then slowly in prog.csv...
 
