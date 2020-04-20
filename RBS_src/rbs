@@ -95,7 +95,7 @@ manually_inst_dwm(){
 	install_mess="Installing dwm... "
 	printf '%s%*s' "$install_mess" "$((($(tput cols) / 2) - ${#install_mess}))"
 	printf "[INSTALLING]"
-	cd tmp/tmprbs
+	cd /tmp/tmprbs
 	sudo git clone --depth 1 https://github.com/LukeSmithxyz/dwm >/dev/null 2>&1
 	cd dwm
 	sed -i "/\/share\/dwm/d" Makefile
