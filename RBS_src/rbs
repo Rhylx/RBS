@@ -115,7 +115,7 @@ insert_dotfiles(){
 	sudo git clone --depth 1 https://github.com/Rhylx/temp_dotfiles  >/dev/null 2>&1
 	sudo cp -rfT temp_dotfiles/ /home/$(who | cut -d " " -f1) >/dev/null 2>&1
 	cd
-	rm -rf .git
+	sudo rm -rf .git
 	rm -f README.md
 }
 
