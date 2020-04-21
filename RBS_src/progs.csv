@@ -9,7 +9,7 @@
 ,xorg-xrandr, "to manage resolutions"
 ,xorg-xset, "to manage x rate"
 ,ttf-linux-libertine, "fonts for sans-serif and sans"
-,ttf-inconsolata, "fonts for monospace"
+,ttf-liberation, "fonts for monospace"
 ,xorg-fonts,"fonts for graphical server"
 A, lf-git, "is an extensive terminal file manager"
 ,git,"dling config repos"
