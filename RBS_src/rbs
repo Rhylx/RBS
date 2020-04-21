@@ -112,8 +112,11 @@ remove_noise(){
 insert_dotfiles(){
 	echo "Inserting dotfiles..."
 	cd /tmp/tmprbs
-	sudo git clone --depth 1 https://github.com/Rhylx/.dotfiles  >/dev/null 2>&1
+	sudo git clone --depth 1 https://github.com/Rhylx/temp_dotfiles  >/dev/null 2>&1
+	sudo cp -rf temp_dotfiles/ ~/ >/dev/null 2>&1
 	cd ~
+	rm -rf .git
+	rm -f README.md
 }
 
 clear_tmprbs(){
