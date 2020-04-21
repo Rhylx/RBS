@@ -113,8 +113,8 @@ insert_dotfiles(){
 	echo "Inserting dotfiles..."
 	cd /tmp/tmprbs
 	sudo git clone --depth 1 https://github.com/Rhylx/temp_dotfiles  >/dev/null 2>&1
-	sudo cp -rf temp_dotfiles/ ~/ >/dev/null 2>&1
-	cd ~
+	sudo cp -rfT temp_dotfiles/ /home/$(who | cut -d " " -f1) >/dev/null 2>&1
+	cd
 	rm -rf .git
 	rm -f README.md
 }
