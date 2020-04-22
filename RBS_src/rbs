@@ -11,7 +11,7 @@
 
 
 mkdir /tmp/tmprbs
-home_dir = $(who | cut -d " " -f1)
+home_dir="$(who | cut -d " " -f1)"
 read -p "Which aurhelper would you like to install (default is yay): " aurhelper
 
 
