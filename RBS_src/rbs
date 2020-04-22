@@ -11,7 +11,7 @@
 
 
 mkdir /tmp/tmprbs >/dev/null 2>&1
-home_dir="/home/$(who | cut -d " " -f1)/"
+username="$(who | cut -d " " -f1)"
 read -p "Which aurhelper would you like to install (default is yay): " aurhelper
 
 
@@ -111,15 +111,18 @@ remove_noise(){
 }
 
 insert_dotfiles(){
-	echo "Inserting dotfiles..."
+	echo "Inserting and managing dotfiles..."
 	cd /tmp/tmprbs
 	git clone --depth 1 https://github.com/Rhylx/temp_dotfiles  >/dev/null 2>&1
-	cp -rfT temp_dotfiles/ $home_dir >/dev/null 2>&1
+	cp -rfT temp_dotfiles/ /home/${username}/ >/dev/null 2>&1
 	cd
 	sudo rm -rf .git
 	rm -f README.md
-	mkdir -p ${home_dir}.local/share/xorg
+	mkdir -p /home/${username}/.local/share/xorg
 	. /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
+	git config --global user.name  "${username}"
+	git config --global user.email "redbull11570@gmail.com"
+
 }
 
 clear_tmprbs(){
