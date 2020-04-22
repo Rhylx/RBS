@@ -28,8 +28,8 @@ pimp_pacman(){
 }
 
 refresh_keyrings(){
-	echo "Refreshing keyrings..."
-	sudo pacman --noconfirm --needed -Sy archlinux-keyring >/dev/null 2>&1
+	echo "Refreshing keyrings, and checking for updates..."
+	sudo pacman --noconfirm --needed -Syu archlinux-keyring >/dev/null 2>&1
 }
 
 install_yay(){
