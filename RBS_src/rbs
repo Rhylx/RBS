@@ -10,7 +10,7 @@
 # -> Installing dotfiles (which of course need to be reviewed and updated...)
 
 
-mkdir /tmp/tmprbs
+mkdir /tmp/tmprbs >/dev/null 2>&1
 home_dir="$(who | cut -d " " -f1)"
 read -p "Which aurhelper would you like to install (default is yay): " aurhelper
 
