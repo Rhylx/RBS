@@ -11,6 +11,7 @@
 
 
 mkdir /tmp/tmprbs
+home_dir = $(who | cut -d " " -f1)
 read -p "Which aurhelper would you like to install (default is yay): " aurhelper
 
 
@@ -113,10 +114,11 @@ insert_dotfiles(){
 	echo "Inserting dotfiles..."
 	cd /tmp/tmprbs
 	sudo git clone --depth 1 https://github.com/Rhylx/temp_dotfiles  >/dev/null 2>&1
-	sudo cp -rfT temp_dotfiles/ /home/$(who | cut -d " " -f1) >/dev/null 2>&1
+	sudo cp -rfT temp_dotfiles/ $home_dir >/dev/null 2>&1
 	cd
 	sudo rm -rf .git
 	rm -f README.md
+	mkdir -p ${home_dir}/.local/share/xorg
 }
 
 clear_tmprbs(){
