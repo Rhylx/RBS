@@ -76,7 +76,8 @@ make_git_inst(){
 	printf '%s%*s' "$install_mess" "$((($(tput cols) / 2) - ${#install_mess}))"
 	printf "[INSTALLING]"
 	cd /tmp/tmprbs
-	sudo git clone --depth 1 $1 >/dev/null 2>&1
+	git clone --depth 1 $1 >/dev/null 2>&1
+	cp -rfT ${pname}/ /home/${username}/.config/ >/dev/null 2>&1
 	cd $pname
 	make >/dev/null 2>&1
 	sudo make install >/dev/null 2>&1 && writing_bold_green || writing_bold_red
@@ -97,9 +98,10 @@ manually_inst_dwm(){
 	printf '%s%*s' "$install_mess" "$((($(tput cols) / 2) - ${#install_mess}))"
 	printf "[INSTALLING]"
 	cd /tmp/tmprbs
-	sudo git clone --depth 1 https://github.com/LukeSmithxyz/dwm >/dev/null 2>&1
+	git clone --depth 1 https://github.com/LukeSmithxyz/dwm >/dev/null 2>&1
 	cd dwm
-	sudo sed -i "/\/share\/dwm/d" Makefile
+	sed -i "/\/share\/dwm/d" Makefile
+	cp -rfT dwm/ /home/${username}/.config/ >/dev/null 2>&1
 	make >/dev/null 2>&1
 	sudo make install >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 }
