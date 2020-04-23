@@ -77,7 +77,7 @@ make_git_inst(){
 	printf "[INSTALLING]"
 	cd /tmp/tmprbs
 	git clone --depth 1 $1 >/dev/null 2>&1
-	cp -rfT ${pname}/ /home/${username}/.config/${pname}/ >/dev/null 2>&1
+	cp -rfT ${pname} /home/${username}/.config/${pname} >/dev/null 2>&1
 	cd $pname
 	make >/dev/null 2>&1
 	sudo make install >/dev/null 2>&1 && writing_bold_green || writing_bold_red
@@ -101,7 +101,7 @@ manually_inst_dwm(){
 	git clone --depth 1 https://github.com/LukeSmithxyz/dwm >/dev/null 2>&1
 	cd dwm
 	sed -i "/\/share\/dwm/d" Makefile
-	cp -rfT dwm/ /home/${username}/.config/dwm >/dev/null 2>&1
+	cp -rfT dwm /home/${username}/.config/dwm >/dev/null 2>&1
 	make >/dev/null 2>&1
 	sudo make install >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 }
