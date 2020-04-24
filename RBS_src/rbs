@@ -117,7 +117,7 @@ insert_dotfiles(){
 	echo "Inserting and managing dotfiles..."
 	cd /tmp/tmprbs
 	git clone --depth 1 https://github.com/Rhylx/${dot_repo}  >/dev/null 2>&1
-	sudo mv ${dot_repo}/.local/keymap /usr/share/kbd/keymaps/i386/qwerty/my_custom_keymap.map
+	sudo mv ${dot_repo}/.local/tty_keymap/keymap /usr/share/kbd/keymaps/i386/qwerty/my_custom_keymap.map
 	echo "KEYMAP=my_custom_keymap" | sudo tee /etc/vconsole.conf >/dev/null 2>&1
 	cp -rfT temp_dotfiles/ /home/${username}/ >/dev/null 2>&1
 	cd
