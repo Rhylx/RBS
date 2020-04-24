@@ -12,7 +12,7 @@
 
 mkdir /tmp/tmprbs >/dev/null 2>&1
 username="$(who | cut -d " " -f1)"
-dot_repo = "temp_dotfiles"
+dot_repo="temp_dotfiles"
 read -p "Which aurhelper would you like to install (default is yay): " aurhelper
 [ -z "$aurhelper" ] && aurhelper="yay"
 
