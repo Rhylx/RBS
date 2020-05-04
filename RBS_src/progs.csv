@@ -2,6 +2,7 @@
 ,chafa, "to preview images in lf"
 ,man,"manual page reader"
 ,pass, "password manager"
+A,ytop, "task manager"
 ,fzf, "fuzzy finder"
 A,pass-tomb, "to protect the architecture of the passwords"
 ,xorg-server, "graphical server"
