@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This is the main script of RBS : it will auto-install and configure all programs that I daily use
 # Thanks to this webpage (http://xn--rpa.cc/irl/term.html), I'm able to use ANSI escape sequences.
@@ -113,6 +113,25 @@ remove_noise(){
 	echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf >/dev/null
 }
 
+base_dir(){
+	mkdir Dl .Gfre Vids Repos Docs
+}
+
+dash_shell(){
+	sudo ln -sfT dash /usr/bin/sh
+	echo "[Trigger]
+Type = Package
+Operation = Install
+Operation = Upgrade
+Target = bash
+
+[Action]
+Description = Re-pointing /bin/sh symlink to dash...
+When = PostTransaction
+Exec = /usr/bin/ln -sfT dash /usr/bin/sh
+Depends = dash" | sudo tee /usr/share/libalpm/hooks/sh_relink
+}
+
 insert_dotfiles(){
 	echo "Inserting and managing dotfiles..."
 	cd /tmp/tmprbs
@@ -125,9 +144,6 @@ insert_dotfiles(){
 	rm -f README.md
 	mkdir -p /home/${username}/.local/share/xorg
 	. /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
-	git config --global user.name  "${username}"
-	git config --global user.email "redbull11570@gmail.com"
-
 }
 
 clear_tmprbs(){
@@ -146,7 +162,7 @@ remove_all(){
 
 
 
-clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && manually_inst_dwm && remove_noise && insert_dotfiles && clear_tmprbs || remove_all
+clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && manually_inst_dwm && remove_noise && base_dir && dash_shell && insert_dotfiles && clear_tmprbs || remove_all
 
 # Main structure of script is finished for arch. Now, there remains to rebuild all soft and config files # and to add then slowly in prog.csv...
 
