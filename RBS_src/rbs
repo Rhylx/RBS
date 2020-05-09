@@ -129,7 +129,19 @@ Target = bash
 Description = Re-pointing /bin/sh symlink to dash...
 When = PostTransaction
 Exec = /usr/bin/ln -sfT dash /usr/bin/sh
-Depends = dash" | sudo tee /usr/share/libalpm/hooks/sh_relink
+Depends = dash" | sudo tee /usr/share/libalpm/hooks/sh_relink.hook
+}
+
+pacman_statusbar(){
+	echo "[Trigger]
+Type = Package
+Operation = Upgrade
+Target = *
+
+[Action]
+Description = Updating statusbar...
+When = PostTransaction
+Exec = /usr/bin/pkill -RTMIN+8 dwmblocks" | sudo tee /usr/share/libalpm/hooks/statusbar.hook
 }
 
 insert_dotfiles(){
@@ -162,7 +174,7 @@ remove_all(){
 
 
 
-clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && manually_inst_dwm && remove_noise && base_dir && dash_shell && insert_dotfiles && clear_tmprbs || remove_all
+clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && manually_inst_dwm && remove_noise && base_dir && dash_shell && pacman_statusbar && insert_dotfiles && clear_tmprbs || remove_all
 
 # Main structure of script is finished for arch. Now, there remains to rebuild all soft and config files # and to add then slowly in prog.csv...
 
