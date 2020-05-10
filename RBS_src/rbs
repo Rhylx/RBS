@@ -178,7 +178,7 @@ remove_all(){
 
 
 
-clear ; internet && pimp_pacman && refresh_keyrings && install_yay && move_gpg && install_progs && manually_inst_dwm && remove_noise && base_dir && dash_shell && pacman_statusbar && insert_dotfiles && clear_tmprbs || remove_all
+clear ; internet && pimp_pacman && refresh_keyrings && install_yay && move_gpg && install_progs && manually_inst_dwm && remove_noise && base_dir && pacman_statusbar && insert_dotfiles && clear_tmprbs || remove_all
 
 # Main structure of script is finished for arch. Now, there remains to rebuild all soft and config files # and to add then slowly in prog.csv...
 
