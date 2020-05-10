@@ -114,11 +114,9 @@ remove_noise(){
 }
 
 base_dir(){
+	echo "Creating some folders..."
+	cd /home/"${username}"/
 	mkdir Dl .Gfre Vids Repos Docs
-}
-
-move_gpg(){
-	cp -rfT /home/"${username}"/.gnupg/ /home/"${username}"/.local/gnupg >/dev/null 2>&1
 }
 
 dash_shell(){
@@ -162,6 +160,10 @@ insert_dotfiles(){
 	. /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
 }
 
+move_gpg(){
+	cp -rfT /home/"${username}"/.gnupg /home/"${username}"/.local/gnupg >/dev/null 2>&1
+}
+
 clear_tmprbs(){
 	sudo rm -rf /tmp/tmprbs >/dev/null 2>&1
 	echo "Setting back sudoers to normal..."
@@ -178,7 +180,7 @@ remove_all(){
 
 
 
-clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && manually_inst_dwm && remove_noise && base_dir && move_gpg && pacman_statusbar && insert_dotfiles && clear_tmprbs || remove_all
+clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && manually_inst_dwm && remove_noise && base_dir && pacman_statusbar && insert_dotfiles && move_gpg && clear_tmprbs || remove_all
 
 # Main structure of script is finished for arch. Now, there remains to rebuild all soft and config files # and to add then slowly in prog.csv...
 
