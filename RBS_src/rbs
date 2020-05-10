@@ -44,10 +44,6 @@ install_yay(){
 	cd /tmp/tmprbs)
 }
 
-move_gpg(){
-	cp -rfT /home/"${username}"/.gnupg/ /home/"${username}"/.local/gnupg >/dev/null 2>&1
-}
-
 # 3 escape seq meaning: back 12 columns, erase end of line and then write in bold  and green [DONE] and go back to the line
 writing_bold_green(){
 	printf "\e[12D\e[K\e[1;38;5;48m[DONE]\e[m\n"
@@ -69,7 +65,7 @@ aur_installer(){
 	install_mess="Installing $1... "
 	printf '%s%*s' "$install_mess" "$((($(tput cols) / 2) - ${#install_mess}))"
 	printf "[INSTALLING]"
-	$aurhelper --noconfirm -S "$1" >/dev/null 2>&1 && writing_bold_green || writing_bold_red
+	$aurhelper --noconfirm --useask -S "$1" >/dev/null 2>&1 && writing_bold_green || writing_bold_red
 
 }
 
@@ -119,6 +115,10 @@ remove_noise(){
 
 base_dir(){
 	mkdir Dl .Gfre Vids Repos Docs
+}
+
+move_gpg(){
+	cp -rfT /home/"${username}"/.gnupg/ /home/"${username}"/.local/gnupg >/dev/null 2>&1
 }
 
 dash_shell(){
@@ -178,9 +178,8 @@ remove_all(){
 
 
 
-clear ; internet && pimp_pacman && refresh_keyrings && install_yay && move_gpg && install_progs && manually_inst_dwm && remove_noise && base_dir && pacman_statusbar && insert_dotfiles && clear_tmprbs || remove_all
+clear ; internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && manually_inst_dwm && remove_noise && base_dir && move_gpg && pacman_statusbar && insert_dotfiles && clear_tmprbs || remove_all
 
 # Main structure of script is finished for arch. Now, there remains to rebuild all soft and config files # and to add then slowly in prog.csv...
 
 ## Also to do : adapt this script to void and debian...
-
