@@ -5,16 +5,14 @@
 echo -e "Here is the output of lsblk : \n"
 lsblk
 echo
-read -p "Enter drive you want it to install on (only a if on /dev/sda): " -a X
+read -rp "Enter drive you want it to install on (only a if on /dev/sda): " -a X
 echo "Assuming that there will be 4 partitions: boot, swap, / and /home"
-read -p "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
+read -rp "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
 tzselect > tz.tmp
-read -p "Enter a name for the computer: " comp
-read -p "Enter a name for the main user: " username
+read -rp "Enter a name for the computer: " comp
+read -rp "Enter a name for the main user: " username
 echo "Let the fun start!!!"
 #Functionnal part :
-
-DIST=$(./detect_distrib) #once installation done write this to /etc/environment
 
 internet()
 {
@@ -27,28 +25,28 @@ partition(){
 	(echo "unit: sectors
 label: dos
 
-/dev/sd"${X}"1:  size=200M,           type=83, bootable
-/dev/sd"${X}"2:  size="${SIZE[0]}"G,  type=82
-/dev/sd"${X}"3:  size="${SIZE[1]}"G,  type=83
-/dev/sd"${X}"4:  	              type=83" | sfdisk /dev/sd${X} >/dev/null 2>&1) || (echo "Either does the drive not exist or swap + / is too big" && false)
+/dev/sd'${X[0]}'1:  size=200M,           type=83, bootable
+/dev/sd'${X[0]}'2:  size='${SIZE[0]}'G,  type=82
+/dev/sd'${X[0]}'3:  size='${SIZE[1]}'G,  type=83
+/dev/sd'${X[0]}'4:  	                 type=83" | sfdisk /dev/sd"${X[0]}" >/dev/null 2>&1) || (echo "Either does the drive not exist or swap + / is too big" && false)
 }
 
 format_part(){
 	echo "Formating the disk..."
-	mkfs.ext4 -qF /dev/sd${X}4 >/dev/null 2>&1
-	mkfs.ext4 -qF /dev/sd${X}3 >/dev/null 2>&1
-	mkfs.ext4 -qF /dev/sd${X}1 >/dev/null 2>&1
-	mkswap /dev/sd${X}2 >/dev/null 2>&1
-	swapon /dev/sd${X}2 >/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd"${X[0]}"4 >/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd"${X[0]}"3 >/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd"${X[0]}"1 >/dev/null 2>&1
+	mkswap /dev/sd"${X[0]}"2 >/dev/null 2>&1
+	swapon /dev/sd"${X[0]}"2 >/dev/null 2>&1
 }
 
 mount_part(){
 	echo "Mounting partitions..."
-	mount /dev/sd${X}3 /mnt >/dev/null 2>&1
+	mount /dev/sd"${X[0]}"3 /mnt >/dev/null 2>&1
 	mkdir /mnt/boot >/dev/null 2>&1
-	mount /dev/sd${X}1 /mnt/boot >/dev/null 2>&1
+	mount /dev/sd"${X[0]}"1 /mnt/boot >/dev/null 2>&1
 	mkdir /mnt/home >/dev/null 2>&1
-	mount /dev/sd${X}4 /mnt/home >/dev/null 2>&1 || (echo "The size of swap+/ is bigger then the actual size available on the disk" && false)
+	mount /dev/sd"${X[0]}"4 /mnt/home >/dev/null 2>&1 || (echo "The size of swap+/ is bigger then the actual size available on the disk" && false)
 }
 
 
@@ -79,13 +77,13 @@ EOF
 grub_install(){
 	echo "Installing grub, it takes a few minutes..."
 	arch-chroot /mnt /bin/sh << EOF
-	grub-install --target=i386-pc /dev/sd$X >/dev/null 2>&1
+	grub-install --target=i386-pc /dev/sd"${X[0]}" >/dev/null 2>&1
 	grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1
 EOF
 }
 
 passwd_infty(){
-	passwd -R /mnt $1 || passwd_infty $1
+	passwd -R /mnt "$1" || passwd_infty "$1"
 }
 
 root_passwd(){
@@ -94,9 +92,9 @@ root_passwd(){
 }
 
 create_user(){
-	arch-chroot /mnt useradd -g wheel -m ${username}
-	echo "Create password for ${username}"
-	passwd_infty ${username}
+	arch-chroot /mnt useradd -g wheel -m "${username}"
+	echo "Create password for " "${username}"
+	passwd_infty "${username}"
 }
 
 setting_sudo(){
@@ -107,7 +105,7 @@ EOF
 }
 
 transition_rbs(){
-	cp -r ../../RBS/ /mnt/home/${username}
+	cp -r ../../RBS/ /mnt/home/"${username}"
 }
 
 well_done(){
@@ -120,11 +118,11 @@ remove_all(){
 	umount /mnt/home >/dev/null 2>&1
 	umount /mnt/boot >/dev/null 2>&1
 	umount /mnt >/dev/null 2>&1
-	swapoff /dev/sd${X}2 >/dev/null 2>&1
+	swapoff /dev/sd"${X[0]}"2 >/dev/null 2>&1
 	echo "unit: sectors
 label: dos
 
-/dev/sd"${X}"1:  type=83"| sfdisk /dev/sd${X} >/dev/null 2>&1
+/dev/sd'${X[0]}'1:  type=83"| sfdisk /dev/sd"${X[0]}" >/dev/null 2>&1
 }
 
 remove_all_error(){
@@ -132,11 +130,9 @@ remove_all_error(){
 	echo "An error has occured. Fix the issue and rerun this script."
 }
 
-clear ; remove_all && internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin && grub_install && setting_sudo && root_passwd && create_user && transition_rbs && well_done || remove_all_error
+clear ; (remove_all && internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin && grub_install && setting_sudo && root_passwd && create_user && transition_rbs && well_done ) || remove_all_error
 
 
 # Script finished for arch installation process
 # TO DO :
 # try to do the same for Void and Debian.
-
-
