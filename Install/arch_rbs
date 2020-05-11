@@ -30,7 +30,7 @@ label: dos
 /dev/sd"${X}"1:  size=200M,           type=83, bootable
 /dev/sd"${X}"2:  size="${SIZE[0]}"G,  type=82
 /dev/sd"${X}"3:  size="${SIZE[1]}"G,  type=83
-/dev/sd"${X}"4:  	              type=83" | sfdisk /dev/sd${X}) || (echo "Either does the drive not exist or swap + / is too big" && false)
+/dev/sd"${X}"4:  	              type=83" | sfdisk /dev/sd${X}) >/dev/null 2>&1 || (echo "Either does the drive not exist or swap + / is too big" && false)
 }
 
 format_part(){
@@ -124,7 +124,7 @@ remove_all(){
 	echo "unit: sectors
 label: dos
 
-/dev/sd"${X}"1:  type=83"| sfdisk /dev/sd${X}
+/dev/sd"${X}"1:  type=83"| sfdisk /dev/sd${X} >/dev/null 2>&1
 }
 
 remove_all_error(){
