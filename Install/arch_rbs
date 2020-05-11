@@ -24,33 +24,13 @@ internet()
 
 partition(){
 	echo "Partioning the disk..."
-	cat <<EOF | 2>&- >/dev/null fdisk -W always /dev/sd$X || (echo "Either does the drive not exist or swap is too big" && false)
+	(echo "unit: sectors
+label: dos
 
-
-o
-n
-p
-
-
-+200M
-n
-p
-
-
-+${SIZE[0]}G
-n
-p
-
-
-+${SIZE[1]}G
-n
-p
-
-
-a
-1
-w
-EOF
+/dev/sd"${X}"1:  size=200M,           type=83, bootable
+/dev/sd"${X}"2:  size="${SIZE[0]}"G,  type=82
+/dev/sd"${X}"3:  size="${SIZE[1]}"G,  type=83
+/dev/sd"${X}"4:  	              type=83" | sfdisk /dev/sd${X}) || (echo "Either does the drive not exist or swap + / is too big" && false)
 }
 
 format_part(){
@@ -141,17 +121,10 @@ remove_all(){
 	umount /mnt/boot >/dev/null 2>&1
 	umount /mnt >/dev/null 2>&1
 	swapoff /dev/sd${X}2 >/dev/null 2>&1
-	cat << EOF | 2>&- >/dev/null fdisk -W always /dev/sd$X
+	echo "unit: sectors
+label: dos
 
-
-o
-n
-p
-
-
-
-w
-EOF
+/dev/sd"${X}"1:  type=83"| sfdisk /dev/sd${X}
 }
 
 remove_all_error(){
@@ -165,3 +138,5 @@ clear ; remove_all && internet && partition && format_part && mount_part && inst
 # Script finished for arch installation process
 # TO DO :
 # try to do the same for Void and Debian.
+
+
