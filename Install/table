@@ -1,7 +1,0 @@
-unit: sectors 
-label: dos
-
-/dev/sda1:  size=200M, type=83, bootable
-/dev/sda2:  size=2G,   type=82 
-/dev/sda3:  size=12G,  type=83
-/dev/sda4:  size=5.8G, type=83
