@@ -80,7 +80,7 @@ make_git_inst(){
 }
 
 install_progs(){
-	while IFS=, read -r tag prog ; do
+	while IFS=, read -r tag prog _ ; do
 		case "$tag" in
 			"A") aur_installer "$prog" ;;
 			"G") make_git_inst "$prog" ;;
