@@ -93,7 +93,7 @@ root_passwd(){
 
 create_user(){
 	arch-chroot /mnt useradd -g wheel -m "${username}"
-	echo "Create password for " "${username}"
+	echo "Create password for ${username}"
 	passwd_infty "${username}"
 }
 
