@@ -88,7 +88,7 @@ passwd_infty(){
 
 root_passwd(){
 	echo "Create the root password"
-	passwd_infty
+	passwd_infty root
 }
 
 create_user(){
