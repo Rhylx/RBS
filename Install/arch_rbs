@@ -11,7 +11,7 @@ read -rp "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
 tzselect > tz.tmp
 read -rp "Enter a name for the computer: " comp
 read -rp "Enter a name for the main user: " username
-echo "Let the fun start!!!"
+echo "Let the fun begin!!!"
 #Functionnal part :
 
 internet()
@@ -25,10 +25,10 @@ partition(){
 	(echo "unit: sectors
 label: dos
 
-/dev/sd'${X[0]}'1:  size=200M,           type=83, bootable
-/dev/sd'${X[0]}'2:  size='${SIZE[0]}'G,  type=82
-/dev/sd'${X[0]}'3:  size='${SIZE[1]}'G,  type=83
-/dev/sd'${X[0]}'4:  	                 type=83" | sfdisk /dev/sd"${X[0]}" >/dev/null 2>&1) || (echo "Either does the drive not exist or swap + / is too big" && false)
+/dev/sd${X[0]}1:  size=200M,         type=83, bootable
+/dev/sd${X[0]}2:  size=${SIZE[0]}G,  type=82
+/dev/sd${X[0]}3:  size=${SIZE[1]}G,  type=83
+/dev/sd${X[0]}4:  	             type=83" | sfdisk /dev/sd"${X[0]}" >/dev/null 2>&1) || (echo "Either does the drive not exist or swap + / is too big" && false)
 }
 
 format_part(){
@@ -122,7 +122,7 @@ remove_all(){
 	echo "unit: sectors
 label: dos
 
-/dev/sd'${X[0]}'1:  type=83"| sfdisk /dev/sd"${X[0]}" >/dev/null 2>&1
+/dev/sd${X[0]}1:  type=83"| sfdisk /dev/sd"${X[0]}" >/dev/null 2>&1
 }
 
 remove_all_error(){
