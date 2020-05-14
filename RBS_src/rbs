@@ -11,6 +11,7 @@ mkdir /tmp/tmprbs >/dev/null 2>&1
 username="$(who | cut -d " " -f1)"
 dot_repo="temp_dotfiles"
 read -rp "Which aurhelper would you like to install (default is yay): " aurhelper
+# read -rp "Choose your team: " main_color
 [ -z "$aurhelper" ] && aurhelper="yay"
 
 internet()
