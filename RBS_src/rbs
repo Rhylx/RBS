@@ -118,6 +118,7 @@ base_dir(){
 }
 
 dash_shell(){
+	echo "Setting up dash shell..."
 	sudo ln -sfT dash /usr/bin/sh
 	echo "[Trigger]
 Type = Package
@@ -130,6 +131,11 @@ Description = Re-pointing /bin/sh symlink to dash...
 When = PostTransaction
 Exec = /usr/bin/ln -sfT dash /usr/bin/sh
 Depends = dash" | sudo tee /usr/share/libalpm/hooks/sh_relink.hook >/dev/null 2>&1
+}
+
+doas_config(){
+	echo "Setting up doas"
+	echo "permit ${username} as root" | sudo tee /etc/doas.conf
 }
 
 pacman_statusbar(){
@@ -178,7 +184,7 @@ remove_all(){
 
 
 
-clear ; (internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && manually_inst_dwm && remove_noise && base_dir && pacman_statusbar && insert_dotfiles && move_gpg && clear_tmprbs) || remove_all
+clear ; (internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && manually_inst_dwm && remove_noise && base_dir && dash_shell && doas_config && pacman_statusbar && insert_dotfiles && move_gpg && clear_tmprbs) || remove_all
 
 # Main structure of script is finished for arch. Now, there remains to rebuild all soft and config files # and to add then slowly in prog.csv...
 
