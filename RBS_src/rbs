@@ -138,6 +138,13 @@ doas_config(){
 	echo "permit ${username} as root" | sudo tee /etc/doas.conf
 }
 
+fcron_config(){
+	echo "Setting up fcron"
+	sudo systemctl start fcron >/dev/null 2>&1
+	sudo systemctl enable fcron >/dev/null 2>&1
+	fcrontab /home/"${username}"/RBS/RBS_src/crontabs >/dev/null 2>&1
+}
+
 pacman_statusbar(){
 	echo "[Trigger]
 Type = Package
@@ -184,7 +191,21 @@ remove_all(){
 
 
 
-clear ; (internet && pimp_pacman && refresh_keyrings && install_yay && install_progs && manually_inst_dwm && remove_noise && base_dir && dash_shell && doas_config && pacman_statusbar && insert_dotfiles && move_gpg && clear_tmprbs) || remove_all
+clear ; (internet &&
+      pimp_pacman &&
+ refresh_keyrings &&
+      install_yay &&
+    install_progs &&
+manually_inst_dwm &&
+     remove_noise &&
+         base_dir &&
+       dash_shell &&
+      doas_config &&
+       fcron_conf &&
+ pacman_statusbar &&
+  insert_dotfiles &&
+         move_gpg &&
+    clear_tmprbs) || remove_all
 
 # Main structure of script is finished for arch. Now, there remains to rebuild all soft and config files # and to add then slowly in prog.csv...
 
