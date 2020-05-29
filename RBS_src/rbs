@@ -142,7 +142,9 @@ fcron_config(){
 	echo "Setting up fcron"
 	sudo systemctl start fcron >/dev/null 2>&1
 	sudo systemctl enable fcron >/dev/null 2>&1
-	fcrontab /home/"${username}"/RBS/RBS_src/crontabs >/dev/null 2>&1
+	fcrontab - >/dev/null 2>&1 << "EOF"
+@ 1w rm -rf $HOME/.Gfre/*
+EOF
 }
 
 pacman_statusbar(){
