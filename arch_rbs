@@ -5,13 +5,25 @@
 echo -e "Here is the output of lsblk : \n"
 lsblk
 echo
-read -rp "Enter drive you want it to install on (only a if on /dev/sda): " -a X
+read -rp "Enter drive you want it to install on (only a if on /dev/sda) [a]: " -a X
 echo "Assuming that there will be 4 partitions: boot, swap, / and /home"
-read -rp "Enter partionsize in gb , separated by a space (swap & /): " -a SIZE
-tzselect > tz.tmp
-read -rp "Enter a name for the computer: " comp
-read -rp "Enter a name for the main user: " username
+read -rp "Enter partionsize in gb , separated by a space (swap & /) [2 10]: " -a SIZE
+read -rp "Select your timezone [Europe/Paris]: " tz
+read -rp "Enter a name for the computer [main]: " comp
+read -rp "Enter a name for the main user [rhylx]: " username
+read -rp "Do you want to set default passwords ? [Y/n] " psswd
 echo "Let the fun begin!!!"
+
+dfltX=( "a" )
+dfltSIZE=( 2 10 )
+X=( "${X:-"${dfltX[@]}"}" )
+SIZE=( "${SIZE:-"${dfltSIZE[@]}"}" )
+tz=${tz:-"Europe/Paris"}
+comp=${comp:-"main"}
+username=${username:-"rhylx"}
+psswd=${psswd:-"Y"}
+([ "$tz" == "?" ] && tzselect > tz.tmp ) || (echo "$tz" > tz.tmp)
+
 #Functionnal part :
 
 internet()
@@ -82,6 +94,13 @@ grub_install(){
 EOF
 }
 
+dft_passwd(){
+	echo "Creating ${username} and setting up default passwords"
+	chpasswd -R /mnt "root:archrbs"
+	arch-chroot /mnt useradd -g wheel -m "${username}"
+	chpasswd -R /mnt "${username}:arch"
+}
+
 passwd_infty(){
 	passwd -R /mnt "$1" || passwd_infty "$1"
 }
@@ -92,15 +111,20 @@ root_passwd(){
 }
 
 create_user(){
-	arch-chroot /mnt useradd -g wheel -m "${username}"
 	echo "Create password for ${username}"
+	arch-chroot /mnt useradd -g wheel -m "${username}"
 	passwd_infty "${username}"
+}
+
+psswd_user(){
+	([[ "$psswd" == [yY] ]] && dft_passwd) || (root_passwd && create_user)
 }
 
 setting_sudo(){
 	echo "Finally setting up sudoers file, will be easier for rbs..."
 	arch-chroot /mnt /bin/sh << EOF
 	echo "%wheel ALL=(ALL) NOPASSWD: ALL #RBS" >> /etc/sudoers
+	echo "Defaults timestamp_timeout=10" >> /etc/sudoers
 EOF
 }
 
@@ -112,6 +136,7 @@ well_done(){
 	clear
 	echo "The distribution has been correctly installed !!"
 	echo "You should restart, remove the livecd, log in as ${username} and run the script called rbs !!:D"
+	echo "Remember to set passwords if they were set by default !!"
 }
 
 remove_all(){
@@ -130,8 +155,20 @@ remove_all_error(){
 	echo "An error has occured. Fix the issue and rerun this script."
 }
 
-clear ; (remove_all && internet && partition && format_part && mount_part && install_dist && gen_fstab && chrootin && grub_install && setting_sudo && root_passwd && create_user && transition_rbs && well_done ) || remove_all_error
-
+clear ;
+(remove_all     &&
+ internet       &&
+ partition      &&
+ format_part    &&
+ mount_part     &&
+ install_dist   &&
+ gen_fstab      &&
+ chrootin       &&
+ grub_install   &&
+ setting_sudo   &&
+ psswd_user     &&
+ transition_rbs &&
+ well_done ) || remove_all_error
 
 # Script finished for arch installation process
 # TO DO :
