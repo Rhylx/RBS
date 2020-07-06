@@ -8,7 +8,9 @@ echo
 read -rp "Enter drive you want it to install on (only a if on /dev/sda) [a]: " -a X
 echo "Assuming that there will be 4 partitions: boot, swap, / and /home"
 read -rp "Enter partionsize in gb , separated by a space (swap & /) [2 10]: " -a SIZE
-read -rp "Select your timezone [Europe/Paris]: " tz
+read -rp "Select your timezone ( ? for more infos ) [Europe/Paris]: " tz
+tz=${tz:-"Europe/Paris"}
+([ "$tz" == "?" ] && tzselect > tz.tmp ) || (echo "$tz" > tz.tmp)
 read -rp "Enter a name for the computer [main]: " comp
 read -rp "Enter a name for the main user [rhylx]: " username
 read -rp "Do you want to set default passwords ? [Y/n] " psswd
@@ -16,13 +18,11 @@ echo "Let the fun begin!!!"
 
 dfltX=( "a" )
 dfltSIZE=( 2 10 )
-X=( "${X:-"${dfltX[@]}"}" )
-SIZE=( "${SIZE:-"${dfltSIZE[@]}"}" )
-tz=${tz:-"Europe/Paris"}
+X=( "${X[@]:-"${dfltX[@]}"}" )
+SIZE=( "${SIZE[@]:-"${dfltSIZE[@]}"}" )
 comp=${comp:-"main"}
 username=${username:-"rhylx"}
 psswd=${psswd:-"Y"}
-([ "$tz" == "?" ] && tzselect > tz.tmp ) || (echo "$tz" > tz.tmp)
 
 #Functionnal part :
 
