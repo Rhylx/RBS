@@ -129,7 +129,7 @@ EOF
 }
 
 transition_rbs(){
-	cp -r ../../RBS/ /mnt/home/"${username}"
+	cp -r ../RBS/ /mnt/home/"${username}"
 }
 
 well_done(){
