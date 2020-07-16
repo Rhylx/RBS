@@ -138,7 +138,7 @@ doas_config(){
 	echo "permit ${username} as root" | sudo tee /etc/doas.conf
 }
 
-fcron_config(){
+fcron_conf(){
 	echo "Setting up fcron"
 	sudo systemctl start fcron >/dev/null 2>&1
 	sudo systemctl enable fcron >/dev/null 2>&1
