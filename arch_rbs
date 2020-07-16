@@ -96,9 +96,9 @@ EOF
 
 dft_passwd(){
 	echo "Creating ${username} and setting up default passwords"
-	chpasswd -R /mnt "root:archrbs"
+	echo "root:archrbs" | chpasswd -R /mnt
 	arch-chroot /mnt useradd -g wheel -m "${username}"
-	chpasswd -R /mnt "${username}:arch"
+	echo "${username}:arch" | chpasswd -R /mnt
 }
 
 passwd_infty(){
