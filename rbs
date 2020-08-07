@@ -139,6 +139,7 @@ fcron_conf(){
 	sudo systemctl enable fcron >/dev/null 2>&1
 	fcrontab - >/dev/null 2>&1 << "EOF"
 @ 1w rm -rf $HOME/.Gfre/*
+@ 1d update_adblocker
 EOF
 }
 
