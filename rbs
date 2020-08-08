@@ -13,6 +13,7 @@ dot_repo="temp_dotfiles"
 read -rp "Which aurhelper would you like to install (default is yay): " aurhelper
 # read -rp "Choose your team: " main_color
 [ -z "$aurhelper" ] && aurhelper="yay"
+LIST=()
 
 internet()
 {
@@ -49,13 +50,14 @@ writing_bold_green(){
 
 writing_bold_red(){
 	printf "\e[12D\e[K\e[1;38;5;196m[ERROR]\e[m\n"
+	LIST=("${LIST[@]}"  "$1")
 }
 
 installer(){
 	install_mess="Installing $1... "
 	printf '%s%*s' "$install_mess" "$((($(tput cols) / 2) - ${#install_mess}))" ""
 	printf "[INSTALLING]"
-	(sudo pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 && writing_bold_green) || writing_bold_red
+	(sudo pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 && writing_bold_green) || (writing_bold_red "$1" )
 }
 
 aur_installer(){
@@ -63,7 +65,7 @@ aur_installer(){
 	install_mess="Installing $1... "
 	printf '%s%*s' "$install_mess" "$((($(tput cols) / 2) - ${#install_mess}))" ""
 	printf "[INSTALLING]"
-	($aurhelper --noconfirm --useask -S "$1" >/dev/null 2>&1 && writing_bold_green) || writing_bold_red
+	($aurhelper --noconfirm --useask -S "$1" >/dev/null 2>&1 && writing_bold_green) || (writing_bold_red "$1")
 
 }
 
@@ -77,16 +79,15 @@ make_git_inst(){
 	cp -rfT "$pname" /home/"${username}"/.config/"${pname}" >/dev/null 2>&1
 	cd "$pname" || exit
 	make >/dev/null 2>&1
-	(sudo make install >/dev/null 2>&1 && writing_bold_green) || writing_bold_red
+	(sudo make install >/dev/null 2>&1 && writing_bold_green) || (writing_bold_red "$1")
 }
 
 install_progs(){
-	LIST=()
 	while IFS=, read -r tag prog _ ; do
 		case "$tag" in
-			"A") aur_installer "$prog" || LIST=("${LIST[@]}"  "${tag}")  ;;
-			"G") make_git_inst "$prog" || LIST=("${LIST[@]}"  "${tag}")  ;;
-			*) installer "$prog"       || LIST=("${LIST[@]}"  "${tag}") ;;
+			"A") aur_installer "$prog"  ;;
+			"G") make_git_inst "$prog"  ;;
+			*) installer "$prog"        ;;
 		esac
 	done < progs.csv
 }
