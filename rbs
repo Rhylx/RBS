@@ -178,7 +178,7 @@ well_done(){
 	clear
 	echo "The installation is finished !!"
 	echo -e "Here is the list of the packages that had an error during installation :\n"
-	echo -e "text \033[1m$(cat /tmp/badlist)\033[0m text\n"
+	echo -e "\033[1m$(cat /tmp/badlist)\033[0m \n"
 	[ ! -f /tmp/badlist ] &&
 	echo "The list is empty, hurray, you have nothing to do but to restart and enjoy your freshly installed usable distro !!:D" ||
 	echo "You should try to install those packages manually"
