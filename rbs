@@ -142,6 +142,9 @@ fcron_conf(){
 @ 1w rm -rf $HOME/.Gfre/*
 @ 1d update_adblocker
 EOF
+	sudo fcrontab - >/dev/null 2>&1 << "EOF"
+@ 1d reflector --latest 200 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+EOF
 }
 
 pacman_statusbar(){
