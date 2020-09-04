@@ -192,6 +192,7 @@ well_done(){
 	[ ! -f /tmp/badlist ] &&
 	echo "The list is empty, hurray, you have nothing to do but to restart and enjoy your freshly installed usable distro !!:D" ||
 	echo "You should try to install those packages manually"
+	echo -e "You also need to install\033[1m libxft-bgra-git\033[0m manually!"
 	echo "Remember to set passwords if they were set by default !!"
 	rm  /tmp/badlist 2>&1
 }
