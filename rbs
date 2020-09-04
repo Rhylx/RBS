@@ -187,7 +187,7 @@ move_gpg(){
 well_done(){
 	clear
 	echo "The installation is finished !!"
-	if [ ! -f /tmp/badlist ]
+	if [ -f /tmp/badlist ]
 	then
 	(echo -e "Here is the list of the packages that had an error during installation :\n"
 	echo -e "\033[1m$(cat /tmp/badlist)\033[0m \n"
