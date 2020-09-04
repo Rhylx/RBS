@@ -4,6 +4,7 @@
 ,pass, "password manager"
 A,ytop, "task manager"
 ,fzf, "fuzzy finder"
+A,tomb-git, "needed for pass-tomb"
 A,pass-tomb, "to protect the architecture of the passwords"
 ,xorg-server, "graphical server"
 ,xorg-xinit, "starts the graphical server"

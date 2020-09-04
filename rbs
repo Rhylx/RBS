@@ -30,6 +30,13 @@ refresh_keyrings(){
 	sudo pacman --noconfirm --needed -Syu archlinux-keyring >/dev/null 2>&1
 }
 
+add_gpg_keys(){
+	echo "Adding extra needed gpg keys..."
+	while read -r key ; do
+		gpg --keyserver keyserver.ubuntu.com --recv-keys "$key" > /dev/null 2>&1
+	done < extra_keys
+}
+
 install_yay(){
 	[ -f "/usr/bin/$aurhelper" ] || (
 	echo "Manually installing ${aurhelper}, this may take several minutes..."
@@ -208,6 +215,7 @@ remove_all(){
 clear ; (internet &&
       pimp_pacman &&
  refresh_keyrings &&
+     add_gpg_keys &&
       install_yay &&
     install_progs &&
 manually_inst_dwm &&
