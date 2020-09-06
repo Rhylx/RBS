@@ -180,8 +180,9 @@ insert_dotfiles(){
 	. /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
 }
 
-move_gpg(){
-	cp -rfT /home/"${username}"/.gnupg /home/"${username}"/.local/gnupg >/dev/null 2>&1
+move_dflt_dirs(){
+	mv -tf /home/"${username}"/.gnupg /home/"${username}"/.local/gnupg >/dev/null 2>&1
+	mv -tf /home/"${username}"/.cargo /home/"${username}"/.local/cargo >/dev/null 2>&1
 }
 
 well_done(){
@@ -229,7 +230,7 @@ manually_inst_dwm &&
        fcron_conf &&
  pacman_statusbar &&
   insert_dotfiles &&
-         move_gpg &&
+   move_dflt_dirs &&
      clear_tmprbs &&
         well_done) || remove_all
 
