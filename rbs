@@ -208,7 +208,6 @@ well_done(){
 
 clear_tmprbs(){
 	sudo rm -rf /tmp/tmprbs >/dev/null 2>&1
-	sudo rm -rf /home/'${username}'/RBS >/dev/null 2>&1
 	echo "Setting back sudoers to normal..."
 	echo "%wheel ALL=(ALL) ALL
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/systemctl suspend,/usr/bin/mount,/usr/bin/umount,/usr/bin/pacman -Syu,/usr/bin/pacman -Syyu,/usr/bin/systemctl restart NetworkManager,/usr/bin/pacman -Syyu --noconfirm,/usr/bin/loadkeys,/usr/bin/yay
