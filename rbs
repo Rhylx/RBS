@@ -181,10 +181,13 @@ insert_dotfiles(){
 }
 
 move_dflt_dirs(){
-	mv -tf /home/"${username}"/.local/ /home/"${username}"/.gnupg >/dev/null 2>&1
+	echo "Cleaning home..."
+	mv -ft /home/"${username}"/.local/ /home/"${username}"/.gnupg >/dev/null 2>&1
 	mv /home/"${username}"/.local/.gnupg /home/"${username}"/.local/gnupg >/dev/null 2>&1
-	mv -tf /home/"${username}"/.local/ /home/"${username}"/.cargo >/dev/null 2>&1
+	mv -ft /home/"${username}"/.local/ /home/"${username}"/.cargo >/dev/null 2>&1
 	mv /home/"${username}"/.local/.cargo /home/"${username}"/.local/cargo >/dev/null 2>&1
+	rm -f /home/"${username}"/.viminfo >/dev/null 2>&1
+	rm -f /home/"${username}"/.bash_logout >/dev/null 2>&1
 }
 
 well_done(){
