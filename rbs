@@ -182,8 +182,6 @@ insert_dotfiles(){
 
 move_dflt_dirs(){
 	echo "Cleaning home..."
-	mv -ft /home/"${username}"/.local/ /home/"${username}"/.gnupg >/dev/null 2>&1
-	mv /home/"${username}"/.local/.gnupg /home/"${username}"/.local/gnupg >/dev/null 2>&1
 	mv -ft /home/"${username}"/.local/ /home/"${username}"/.cargo >/dev/null 2>&1
 	mv /home/"${username}"/.local/.cargo /home/"${username}"/.local/cargo >/dev/null 2>&1
 	rm -f /home/"${username}"/.viminfo >/dev/null 2>&1
