@@ -1,0 +1,175 @@
+#!/bin/bash
+# This script will auto-install Arch Linux the way I like
+#I/O part :
+
+echo -e "Here is the output of lsblk : \n"
+lsblk
+echo
+read -rp "Enter drive you want it to install on (only a if on /dev/sda) [a]: " -a X
+echo "Assuming that there will be 4 partitions: boot, swap, / and /home"
+read -rp "Enter partionsize in gb , separated by a space (swap & /) [2 10]: " -a SIZE
+read -rp "Select your timezone ( ? for more infos ) [Europe/Paris]: " tz
+tz=${tz:-"Europe/Paris"}
+([ "$tz" == "?" ] && tzselect > tz.tmp ) || (echo "$tz" > tz.tmp)
+read -rp "Enter a name for the computer [main]: " comp
+read -rp "Enter a name for the main user [rhylx]: " username
+read -rp "Do you want to set default passwords ? [Y/n] " psswd
+echo "Let the fun begin!!!"
+
+dfltX=( "a" )
+dfltSIZE=( 2 10 )
+X=( "${X[@]:-"${dfltX[@]}"}" )
+SIZE=( "${SIZE[@]:-"${dfltSIZE[@]}"}" )
+comp=${comp:-"main"}
+username=${username:-"rhylx"}
+psswd=${psswd:-"Y"}
+
+#Functionnal part :
+
+internet()
+{
+	echo "Testing internet connection..."
+	ping -c 2 www.example.com 2>&- >/dev/null || (echo "You're not connected to the internet. Check out your connection" && false)
+}
+
+partition(){
+	echo "Partioning the disk..."
+	(echo "unit: sectors
+label: dos
+
+/dev/sd${X[0]}1:  size=200M,         type=83, bootable
+/dev/sd${X[0]}2:  size=${SIZE[0]}G,  type=82
+/dev/sd${X[0]}3:  size=${SIZE[1]}G,  type=83
+/dev/sd${X[0]}4:  	             type=83" | sfdisk /dev/sd"${X[0]}" >/dev/null 2>&1) || (echo "Either does the drive not exist or swap + / is too big" && false)
+}
+
+format_part(){
+	echo "Formating the disk..."
+	mkfs.ext4 -qF /dev/sd"${X[0]}"4 >/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd"${X[0]}"3 >/dev/null 2>&1
+	mkfs.ext4 -qF /dev/sd"${X[0]}"1 >/dev/null 2>&1
+	mkswap /dev/sd"${X[0]}"2 >/dev/null 2>&1
+	swapon /dev/sd"${X[0]}"2 >/dev/null 2>&1
+}
+
+mount_part(){
+	echo "Mounting partitions..."
+	mount /dev/sd"${X[0]}"3 /mnt >/dev/null 2>&1
+	mkdir /mnt/boot >/dev/null 2>&1
+	mount /dev/sd"${X[0]}"1 /mnt/boot >/dev/null 2>&1
+	mkdir /mnt/home >/dev/null 2>&1
+	mount /dev/sd"${X[0]}"4 /mnt/home >/dev/null 2>&1 || (echo "The size of swap+/ is bigger then the actual size available on the disk" && false)
+}
+
+
+install_dist(){
+	echo "Installing Arch, can take several minutes..."
+	pacstrap /mnt base base-devel linux linux-firmware dhcp networkmanager vim grub >/dev/null 2>&1 || (echo "Something went wrong during pacstrap step" && false)
+}
+
+gen_fstab(){
+	echo "Generating fstab..."
+	genfstab -U /mnt >> /mnt/etc/fstab
+}
+
+chrootin(){
+	echo "Manage locales and enabling networkmanager..."
+	arch-chroot /mnt /bin/sh << EOF
+	ln -sf /usr/share/zoneinfo/$(cat tz.tmp) /etc/localtime
+	hwclock --systohc
+	systemctl enable NetworkManager >/dev/null 2>&1
+	echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+	locale-gen >/dev/null
+	echo "LANG=en_US.UTF-8" >> /etc/locale.conf
+	echo $comp >> /etc/hostname
+EOF
+	rm tz.tmp
+}
+
+grub_install(){
+	echo "Installing grub, it takes a few minutes..."
+	arch-chroot /mnt /bin/sh << EOF
+	grub-install --target=i386-pc /dev/sd"${X[0]}" >/dev/null 2>&1
+	grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1
+EOF
+}
+
+dft_passwd(){
+	echo "Creating ${username} and setting up default passwords"
+	echo "root:archrbs" | chpasswd -R /mnt
+	arch-chroot /mnt useradd -g wheel -m "${username}"
+	echo "${username}:arch" | chpasswd -R /mnt
+}
+
+passwd_infty(){
+	passwd -R /mnt "$1" || passwd_infty "$1"
+}
+
+root_passwd(){
+	echo "Create the root password"
+	passwd_infty root
+}
+
+create_user(){
+	echo "Create password for ${username}"
+	arch-chroot /mnt useradd -g wheel -m "${username}"
+	passwd_infty "${username}"
+}
+
+psswd_user(){
+	([[ "$psswd" == [yY] ]] && dft_passwd) || (root_passwd && create_user)
+}
+
+setting_sudo(){
+	echo "Finally setting up sudoers file, will be easier for rbs..."
+	arch-chroot /mnt /bin/sh << EOF
+	echo "%wheel ALL=(ALL) NOPASSWD: ALL #RBS" >> /etc/sudoers
+	echo "Defaults timestamp_timeout=10" >> /etc/sudoers
+EOF
+}
+
+transition_rbs(){
+	cp -r ../RBS/ /mnt/home/"${username}"
+}
+
+well_done(){
+	clear
+	echo "The distribution has been correctly installed !!"
+	echo "You should restart, remove the livecd, log in as ${username} and run the script called rbs !!:D"
+	echo "Remember to set passwords if they were set by default !!"
+}
+
+remove_all(){
+	umount /mnt/home >/dev/null 2>&1
+	umount /mnt/boot >/dev/null 2>&1
+	umount /mnt >/dev/null 2>&1
+	swapoff /dev/sd"${X[0]}"2 >/dev/null 2>&1
+	echo "unit: sectors
+label: dos
+
+/dev/sd${X[0]}1:  type=83"| sfdisk /dev/sd"${X[0]}" >/dev/null 2>&1
+}
+
+remove_all_error(){
+	remove_all
+	echo "An error has occured. Fix the issue and rerun this script."
+}
+
+clear ;
+(remove_all     &&
+ internet       &&
+ partition      &&
+ format_part    &&
+ mount_part     &&
+ install_dist   &&
+ gen_fstab      &&
+ chrootin       &&
+ grub_install   &&
+ psswd_user     &&
+ setting_sudo   &&
+ transition_rbs &&
+ well_done ) || remove_all_error
+
+# Script finished for arch installation process
+# TO DO :
+# try to do the same for Void and Debian.
