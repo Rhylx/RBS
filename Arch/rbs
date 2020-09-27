@@ -180,6 +180,11 @@ insert_dotfiles(){
 	. /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
 }
 
+acti_proc(){ # To be modified for runnit
+	echo "Activating the processes..."
+	systemctl enable bluetooth >/dev/null 2>&1
+}
+
 move_dflt_dirs(){
 	echo "Cleaning home..."
 	mv -ft /home/"${username}"/.local/ /home/"${username}"/.cargo >/dev/null 2>&1
@@ -233,6 +238,7 @@ manually_inst_dwm &&
        fcron_conf &&
  pacman_statusbar &&
   insert_dotfiles &&
+	acti_proc &&
    move_dflt_dirs &&
      clear_tmprbs &&
         well_done) || remove_all
