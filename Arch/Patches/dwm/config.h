@@ -119,8 +119,8 @@ static Key keys[] = {
 	{ MODKEY,			XK_b,		togglebar,	{0} },
 	/* { MODKEY|ShiftMask,		XK_b,		spawn,		SHCMD("") }, */
 
-	/* { MODKEY,			XK_c,		spawn,		SHCMD("") }, */
-	/* { MODKEY|ShiftMask,		XK_c,		spawn,		SHCMD("") }, */
+	{ MODKEY,			XK_c,		togglescratch,	{.ui = 0}},
+	{ MODKEY|ShiftMask,		XK_c,		togglescratch,	{.ui = 1}},
 
 	{ MODKEY,			XK_d,		spawn,          {.v = dmenucmd } },
 	/* { MODKEY|ShitfMask,		XK_d,		spawn,		SHCMD("") } }, */
@@ -225,20 +225,20 @@ static Key keys[] = {
 	{ MODKEY,			XK_backslash,	view,		{0} },
 	/* { MODKEY|ShiftMask,		XK_backslash,	spawn,		SHCMD("") }, */
 
-	{ MODKEY,			XK_semicolon,	shiftview,	{ .i = 1 } },
-	{ MODKEY|ShiftMask,		XK_semicolon,	shifttag,	{ .i = 1 } },
+	/* { MODKEY,			XK_semicolon,	shiftview,	{ .i = 1 } }, */
+	/* { MODKEY|ShiftMask,		XK_semicolon,	shifttag,	{ .i = 1 } }, */
 
-	{ MODKEY,			XK_apostrophe,	togglescratch,	{.ui = 1} },
+	/* { MODKEY,			XK_apostrophe,	togglescratch,	{.ui = 1} }, */
 	/* { MODKEY|ShiftMask,		XK_apostrophe,	spawn,		SHCMD("") }, */
 
 	{ MODKEY,			XK_Return,	spawn,		{.v = termcmd } },
-	{ MODKEY|ShiftMask,		XK_Return,	togglescratch,	{.ui = 0} },
+	/* { MODKEY|ShiftMask,		XK_Return,	togglescratch,	{.ui = 0} }, */
 
 	{ MODKEY,			XK_comma,	spawn,		SHCMD("mpc prev") },
 	{ MODKEY|ShiftMask,		XK_comma,	spawn,		SHCMD("mpc seek 0%") },
 
-	{ MODKEY,			XK_period,	spawn,		SHCMD("mpc next") },
-	{ MODKEY|ShiftMask,		XK_period,	spawn,		SHCMD("mpc repeat") },
+	{ MODKEY,			XK_period,	shiftview,	{ .i = 1 } },
+	{ MODKEY|ShiftMask,		XK_period,	shifttag,	{ .i = 1 }},
 
 	{ MODKEY,			XK_Left,	focusmon,	{.i = -1 } },
 	{ MODKEY|ShiftMask,		XK_Left,	tagmon,		{.i = -1 } },
