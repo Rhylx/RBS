@@ -98,21 +98,6 @@ install_progs(){
 	done < progs.csv
 }
 
-manually_inst_dwm(){
-	install_mess="Installing dwm... "
-	printf '%s%*s' "$install_mess" "$((($(tput cols) / 2) - ${#install_mess}))" ""
-	printf "[INSTALLING]"
-	cd /tmp/tmprbs || exit
-	git clone --depth 1 https://github.com/LukeSmithxyz/dwm >/dev/null 2>&1
-	cd dwm || exit
-	sed -i "/\/share\/dwm/d" Makefile
-	cd ..
-	cp -rfT dwm /home/"${username}"/.config/dwm >/dev/null 2>&1
-	cd dwm || exit
-	make >/dev/null 2>&1
-	(sudo make install >/dev/null 2>&1 && writing_bold_green) || writing_bold_red
-}
-
 remove_noise(){
 	echo "Removing the beep sound..."
 	sudo rmmod pcspkr
@@ -231,7 +216,6 @@ clear ; (internet &&
      add_gpg_keys &&
       install_yay &&
     install_progs &&
-manually_inst_dwm &&
      remove_noise &&
          base_dir &&
        dash_shell &&
