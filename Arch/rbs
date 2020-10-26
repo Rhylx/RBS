@@ -107,7 +107,7 @@ remove_noise(){
 base_dir(){
 	echo "Creating some folders..."
 	cd /home/"${username}"/ ||exit
-	mkdir Dl .Gfre Vids Repos Docs
+	mkdir Dl .Gfre Vids Repos Docs Msc
 }
 
 dash_shell(){
