@@ -98,6 +98,15 @@ install_progs(){
 	done < progs.csv
 }
 
+lynx_inst(){
+	echo "Lynx is being installed, need to be done by hand to activate externs"
+	cd /home/"${username}"/.cache/yay || exit
+	yay -G lynx-git >/dev/null 2>&1
+	cd /home/"${username}"/.cache/yay/lynx-git || exit
+	sed '/--enable-ipv6/ a  \ \ \ \ --enable-externs \\ ' PKGBUILD > temp && mv temp PKGBUILD
+	makepkg --noconfirm --install >/dev/null 2>&1
+}
+
 remove_noise(){
 	echo "Removing the beep sound..."
 	sudo rmmod pcspkr
@@ -216,6 +225,7 @@ clear ; (internet &&
      add_gpg_keys &&
       install_yay &&
     install_progs &&
+        lynx_inst &&
      remove_noise &&
          base_dir &&
        dash_shell &&
