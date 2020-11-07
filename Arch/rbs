@@ -103,7 +103,7 @@ lynx_inst(){
 	cd /home/"${username}"/.cache/yay || exit
 	yay -G lynx-git >/dev/null 2>&1
 	cd /home/"${username}"/.cache/yay/lynx-git || exit
-	sed '/--enable-ipv6/ a  \ \ \ \ --enable-externals \\ ' PKGBUILD > temp && mv temp PKGBUILD
+	sed '/--enable-ipv6/ a  \ \ \ \ --enable-externs \\ ' PKGBUILD > temp && mv temp PKGBUILD
 	makepkg --syncdeps --noconfirm --install >/dev/null 2>&1
 }
 
