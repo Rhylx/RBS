@@ -1,17 +1,17 @@
 #!/bin/sh
 # This script is meant to easily deploy searx on a openbsd system
 
-echo "First we install all we'll need :"
+echo "First we install all we'll need"
 
 pkg_add python3 py3-virtualenv py3-lxml py3-pip py3-babel libxml nginx >/dev/null 2>&1
 ln -s /usr/local/bin/pip* /usr/local/bin/pip >/dev/null 2>&1
 
-echo "Let's create a searx user :"
+echo "Let's create a searx user"
 
 useradd -md /usr/local/searx -s /bin/sh searx >/dev/null 2>&1
 chown -R searx:searx /usr/local/searx >/dev/null 2>&1
 
-echo "Now we want to install searx :"
+echo "Now we want to install searx (make take a little while)"
 
 su -l -s /bin/sh searx -c "git clone https://github.com/searx/searx.git /usr/local/searx/searx-src" >/dev/null 2>&1
 su -l -s /bin/sh searx -c "python3 -m venv /usr/local/searx/searx-pyenv" >/dev/null 2>&1
@@ -22,7 +22,7 @@ su -l -s /bin/sh searx -c "mv /usr/local/searx/temp /usr/local/searx/.profile" >
 su -l -s /bin/sh searx -c "pip3 install -U pip setuptools wheel gunicorn" >/dev/null 2>&1
 su -l -s /bin/sh searx -c "cd /usr/local/searx/searx-src && pip install -e ." >/dev/null 2>&1
 
-echo "Finally there remains to cp the configurations files :"
+echo "Finally there remains to cp the configurations files"
 # Here should be directly cp the config files...
 cp -f .profile /usr/local/searx/.profile
 chown searx:searx /usr/local/searx/.profile
