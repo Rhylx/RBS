@@ -3,7 +3,7 @@
 
 echo "First we install all we'll need :"
 
-pkg_add python3 py3-virtualenv py3-lxml py3-pip py3-babel py3-gunicorn libxml nginx >/dev/null 2>&1
+pkg_add python3 py3-virtualenv py3-lxml py3-pip py3-babel libxml nginx >/dev/null 2>&1
 ln -s /usr/local/bin/pip* /usr/local/bin/pip >/dev/null 2>&1
 
 echo "Let's create a searx user :"
@@ -19,12 +19,13 @@ su -l -s /bin/sh searx -c "echo '. /usr/local/searx/searx-pyenv/bin/activate' >>
 awk '/^PATH/{sub(/$/,":\/usr\/local\/searx\/.local\/bin")};{print}' /usr/local/searx/.profile  > /usr/local/searx/temp >/dev/null 2>&1
 chown searx:searx /usr/local/searx/temp >/dev/null 2>&1
 su -l -s /bin/sh searx -c "mv /usr/local/searx/temp /usr/local/searx/.profile" >/dev/null 2>&1
-su -l -s /bin/sh searx -c "pip3 install -U pip setuptools wheel" >/dev/null 2>&1
+su -l -s /bin/sh searx -c "pip3 install -U pip setuptools wheel gunicorn" >/dev/null 2>&1
 su -l -s /bin/sh searx -c "cd /usr/local/searx/searx-src && pip install -e ." >/dev/null 2>&1
 
 echo "Finally there remains to cp the configurations files :"
 # Here should be directly cp the config files...
-su -l -s /bin/sh searx -c "cp -f .profile /usr/local/searx/.profile"
+cp -f .profile /usr/local/searx/.profile
+chown searx:searx /usr/local/searx/.profile
 mkdir /etc/searx
 cp settings.yml /etc/searx/settings.yml
 sed -i -e "s/ultrasecretkey/$(openssl rand -hex 16)/g" "/etc/searx/settings.yml"
