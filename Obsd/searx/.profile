@@ -2,7 +2,7 @@
 #
 # sh/ksh initialization
 
-PATH=$HOME/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R6/bin:/usr/local/bin:/usr/local/sbin:/usr/games
+PATH=$HOME/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R6/bin:/usr/local/bin:/usr/local/sbin:/usr/games:/usr/local/searx/.local/bin
 export PATH HOME TERM
 . /usr/local/searx/searx-pyenv/bin/activate
 export SEARX_SETTINGS_PATH="/etc/searx/settings.yml"

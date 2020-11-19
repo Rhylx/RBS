@@ -24,7 +24,7 @@ su -l -s /bin/sh searx -c "cd /usr/local/searx/searx-src && pip install -e ." >/
 
 echo "Finally there remains to cp the configurations files :"
 # Here should be directly cp the config files...
-su -l -s /bin/sh searx -c "cp .profile /usr/local/searx/.profile"
+su -l -s /bin/sh searx -c "cp -f .profile /usr/local/searx/.profile"
 mkdir /etc/searx
 cp settings.yml /etc/searx/settings.yml
 sed -i -e "s/ultrasecretkey/$(openssl rand -hex 16)/g" "/etc/searx/settings.yml"
