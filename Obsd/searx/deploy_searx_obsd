@@ -26,7 +26,7 @@ echo "Finally there remains to cp the configurations files"
 # Here should be directly cp the config files...
 cp -f .profile /usr/local/searx/.profile
 chown searx:searx /usr/local/searx/.profile
-su -l -s /bin/sh searx -c "pip3 install -U pip gunicorn" >/dev/null 2>&1
+#su -l -s /bin/sh searx -c "pip3 install -U pip gunicorn" >/dev/null 2>&1
 mkdir /etc/searx
 cp settings.yml /etc/searx/settings.yml
 sed -i -e "s/ultrasecretkey/$(openssl rand -hex 16)/g" "/etc/searx/settings.yml"
