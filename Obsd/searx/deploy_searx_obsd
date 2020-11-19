@@ -11,15 +11,16 @@ echo "Let's create a searx user"
 useradd -md /usr/local/searx -s /bin/sh searx >/dev/null 2>&1
 chown -R searx:searx /usr/local/searx >/dev/null 2>&1
 
-echo "Now we want to install searx (make take a little while)"
+echo "Now we want to install searx (may take a little while)"
 
 su -l -s /bin/sh searx -c "git clone https://github.com/searx/searx.git /usr/local/searx/searx-src" >/dev/null 2>&1
-su -l -s /bin/sh searx -c "python3 -m venv /usr/local/searx/searx-pyenv" >/dev/null 2>&1
+pip install -U pip setuptools wheel gunicorn >/dev/null 2>&1
+pip install -U requests pyyaml pygments werkzeug flask flask_babel python-dateutil >/dev/null 2>&1
+su -l -s /bin/sh searx -c "python3 -m venv --system-site-packages /usr/local/searx/searx-pyenv" >/dev/null 2>&1
 su -l -s /bin/sh searx -c "echo '. /usr/local/searx/searx-pyenv/bin/activate' >>  /usr/local/searx/.profile" >/dev/null 2>&1
 awk '/^PATH/{sub(/$/,":\/usr\/local\/searx\/.local\/bin")};{print}' /usr/local/searx/.profile  > /usr/local/searx/temp >/dev/null 2>&1
 chown searx:searx /usr/local/searx/temp >/dev/null 2>&1
 su -l -s /bin/sh searx -c "mv /usr/local/searx/temp /usr/local/searx/.profile" >/dev/null 2>&1
-pip install -U pip setuptools wheel gunicorn >/dev/null 2>&1
 su -l -s /bin/sh searx -c "cd /usr/local/searx/searx-src && pip install -e ." >/dev/null 2>&1
 
 echo "Finally there remains to cp the configurations files"
