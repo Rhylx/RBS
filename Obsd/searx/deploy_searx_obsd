@@ -1,6 +1,7 @@
 #!/bin/sh
-# This script is meant to easily deploy searx on a openbsd system
+# This script is meant to easily deploy searx on Openbsd
 
+clear
 echo "First we install all we'll need"
 
 pkg_add python3 py3-virtualenv py3-lxml py3-pip py3-babel libxml nginx >/dev/null 2>&1
@@ -36,4 +37,4 @@ cp searx /etc/rc.d/searx
 clear
 echo "Searx seems have to be well installed!"
 echo "A rc.d script for searx has also been deployed"
-echo "Lastly, if you want to connect searx to nginx, don't forget to cp the static files of searx to /var/www/searx/static for example ;)"
+echo "Lastly, if you want to connect searx to nginx,\n don't forget to cp the static files of searx to /var/www/searx/static for example ;)"
