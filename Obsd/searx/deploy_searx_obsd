@@ -32,3 +32,8 @@ mkdir /etc/searx
 cp settings.yml /etc/searx/settings.yml
 sed -i -e "s/ultrasecretkey/$(openssl rand -hex 16)/g" "/etc/searx/settings.yml"
 cp searx /etc/rc.d/searx
+
+clear
+echo "Searx seems have to be well installed!"
+echo "A rc.d script for searx has also been deployed"
+echo "Lastly, if you want to connect searx to nginx, don't forget to cp the static files of searx to /var/www/searx/static for example ;)"
