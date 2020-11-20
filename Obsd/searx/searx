@@ -1,6 +1,5 @@
 #!/bin/ksh
 #
-# $OpenBSD: gitea.rc,v 1.5 2019/02/14 10:08:53 pvk Exp $
 
 ncpu=$(sysctl hw.ncpu | cut -d '=' -f2)
 daemon="/usr/local/bin/gunicorn"
