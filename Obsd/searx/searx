@@ -2,13 +2,14 @@
 #
 # $OpenBSD: gitea.rc,v 1.5 2019/02/14 10:08:53 pvk Exp $
 
-daemon="/usr/local/searx/searx-pyenv/bin/gunicorn"
+ncpu="${sysctl hw.ncpu | cut -d '=' -f2}"
+daemon="/usr/local/bin/gunicorn"
 daemon_user="searx"
-daemon_flags=" -b 127.0.0.1:8888 -w 3 searx.webapp:app"
+daemon_flags=" -b 127.0.0.1:8888 -w ${ncpu} searx.webapp:app"
 
 . /etc/rc.d/rc.subr
 
 rc_bg=YES
-pexp="/usr/local/searx/searx-pyenv/bin/python3 /usr/local/searx/searx-pyenv/bin/gunicorn -b 127.0.0.1:8888 -w 3 searx.webapp:app"
+pexp="/usr/local/searx/searx-pyenv/bin/python3 ${daemon} -b 127.0.0.1:8888 -w ${ncpu} searx.webapp:app"
 rcexec="su -l -s /bin/sh ${daemon_user} -c"
 rc_cmd $1
