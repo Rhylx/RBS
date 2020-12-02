@@ -212,9 +212,8 @@ clear_tmprbs(){
 	sudo sed -i "/#RBS/d" /etc/sudoers
 }
 
-remove_all(){
+error_message(){
 	echo "An error occured, please fix it an rerun the script"
-	clear_tmprbs
 }
 
 
@@ -235,7 +234,7 @@ clear ; (internet &&
 	acti_proc &&
    move_dflt_dirs &&
      clear_tmprbs &&
-        well_done) || remove_all
+        well_done) || error_message
 
 # Main structure of script is finished for arch. Now, there remains to rebuild all soft and config files # and to add then slowly in prog.csv...
 
