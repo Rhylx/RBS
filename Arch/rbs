@@ -177,6 +177,7 @@ insert_dotfiles(){
 acti_proc(){ # To be modified for runnit
 	echo "Activating the processes..."
 	sudo systemctl enable bluetooth >/dev/null 2>&1
+	sudo systemctl enable pcscd >/dev/null 2>&1
 }
 
 move_dflt_dirs(){
