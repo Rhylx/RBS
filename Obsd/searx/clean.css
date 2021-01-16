@@ -1,0 +1,13 @@
+#sidebar_results {
+	display: none;
+}
+#categories {
+	display: none;
+}
+#main_results {
+	right: 0%;
+	width: 100%;
+}
+.col-md-2 {
+	display: none;
+}
