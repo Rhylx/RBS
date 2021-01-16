@@ -1,6 +1,6 @@
 general:
     debug : True # Debug mode, only for development
-    instance_name : "Yeah!" # displayed name
+    instance_name : "Browse my Friend!" # displayed name
 
 search:
     safe_search : 0 # Filter results. 0: None, 1: Moderate, 2: Strict
