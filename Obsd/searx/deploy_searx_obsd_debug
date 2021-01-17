@@ -1,9 +1,11 @@
 #!/bin/sh
 # This script is meant to easily deploy searx on a openbsd system
 
+rm -rf /etc/searx
+userdel -r searx
 echo "First we install all we'll need :"
 
-pkg_add python3 py3-virtualenv py3-lxml py3-pip py3-babel py3-gunicorn libxml nginx
+pkg_add python3 py3-virtualenv py3-lxml py3-pip py3-babel py3-gunicorn protobuf libxml nginx
 ln -s /usr/local/bin/pip* /usr/local/bin/pip
 
 echo "Let's create a searx user :"
@@ -19,12 +21,13 @@ su -l -s /bin/sh searx -c "echo '. /usr/local/searx/searx-pyenv/bin/activate' >>
 awk '/^PATH/{sub(/$/,":\/usr\/local\/searx\/.local\/bin")};{print}' /usr/local/searx/.profile  > /usr/local/searx/temp
 chown searx:searx /usr/local/searx/temp
 su -l -s /bin/sh searx -c "mv /usr/local/searx/temp /usr/local/searx/.profile"
-su -l -s /bin/sh searx -c "pip3 install -U pip setuptools wheel"
+su -l -s /bin/sh searx -c "pip3 install -U pip setuptools wheel pyyaml gunicorn"
 su -l -s /bin/sh searx -c "cd /usr/local/searx/searx-src && pip install -e ."
 
 echo "Finally there remains to cp the configurations files :"
 # Here should be directly cp the config files...
-su -l -s /bin/sh searx -c "cp -f .profile /usr/local/searx/.profile"
+cp -f .profile /usr/local/searx/.profile
+chown searx /usr/local/searx/.profile
 mkdir /etc/searx
 cp settings.yml /etc/searx/settings.yml
 sed -i -e "s/ultrasecretkey/$(openssl rand -hex 16)/g" "/etc/searx/settings.yml"

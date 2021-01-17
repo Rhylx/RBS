@@ -1,10 +1,12 @@
 #!/bin/sh
-# This script is meant to easily deploy searx on Openbsd
+# This script is meant to easily deploy searx on a openbsd system
 
-clear
+clean
+rm -rf /etc/searx >/dev/null 2>&1
+userdel -r searx >/dev/null 2>&1
 echo "First we install all we'll need"
 
-pkg_add python3 py3-virtualenv py3-lxml py3-pip py3-babel libxml nginx >/dev/null 2>&1
+pkg_add python3 py3-virtualenv py3-lxml py3-pip py3-babel py3-gunicorn protobuf libxml nginx >/dev/null 2>&1
 ln -s /usr/local/bin/pip* /usr/local/bin/pip >/dev/null 2>&1
 
 echo "Let's create a searx user"
@@ -12,29 +14,24 @@ echo "Let's create a searx user"
 useradd -md /usr/local/searx -s /bin/sh searx >/dev/null 2>&1
 chown -R searx:searx /usr/local/searx >/dev/null 2>&1
 
-echo "Now we want to install searx (may take a little while)"
+echo "Now we want to install searx"
 
 su -l -s /bin/sh searx -c "git clone https://github.com/searx/searx.git /usr/local/searx/searx-src" >/dev/null 2>&1
-pip install -U pip setuptools wheel gunicorn >/dev/null 2>&1
-pip install -U requests pyyaml pygments werkzeug flask flask_babel python-dateutil >/dev/null 2>&1
-su -l -s /bin/sh searx -c "python3 -m venv --system-site-packages /usr/local/searx/searx-pyenv" >/dev/null 2>&1
+su -l -s /bin/sh searx -c "python3 -m venv /usr/local/searx/searx-pyenv" >/dev/null 2>&1
 su -l -s /bin/sh searx -c "echo '. /usr/local/searx/searx-pyenv/bin/activate' >>  /usr/local/searx/.profile" >/dev/null 2>&1
 awk '/^PATH/{sub(/$/,":\/usr\/local\/searx\/.local\/bin")};{print}' /usr/local/searx/.profile  > /usr/local/searx/temp >/dev/null 2>&1
 chown searx:searx /usr/local/searx/temp >/dev/null 2>&1
 su -l -s /bin/sh searx -c "mv /usr/local/searx/temp /usr/local/searx/.profile" >/dev/null 2>&1
+su -l -s /bin/sh searx -c "pip3 install -U pip setuptools wheel pyyaml gunicorn" >/dev/null 2>&1
 su -l -s /bin/sh searx -c "cd /usr/local/searx/searx-src && pip install -e ." >/dev/null 2>&1
 
 echo "Finally there remains to cp the configurations files"
 # Here should be directly cp the config files...
-cp -f .profile /usr/local/searx/.profile
-chown searx:searx /usr/local/searx/.profile
-#su -l -s /bin/sh searx -c "pip3 install -U pip gunicorn" >/dev/null 2>&1
+cp -f .profile /usr/local/searx/.profile >/dev/null 2>&1
+chown searx /usr/local/searx/.profile >/dev/null 2>&1
 mkdir /etc/searx
-cp settings.yml /etc/searx/settings.yml
+cp settings.yml /etc/searx/settings.yml >/dev/null 2>&1
 sed -i -e "s/ultrasecretkey/$(openssl rand -hex 16)/g" "/etc/searx/settings.yml"
-cp searx /etc/rc.d/searx
-
-clear
-echo "Searx seems have to be well installed!"
-echo "A rc.d script for searx has also been deployed"
-echo "Lastly, if you want to connect searx to nginx,\n don't forget to cp the static files of searx to /var/www/searx/static for example ;)"
+cp  searx /etc/rc.d/searx
+clean
+echo "There remains to edit templates/oscar/base.html to add clean.css stylesheet"
