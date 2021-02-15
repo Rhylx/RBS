@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# Options to add :
+#   -> Delete an account
+
+msmtprc="${XDG_CONFIG_HOME:-$HOME/.config}/msmtp/config"
+mbsyncrc="${MBSYNCRC:-$HOME/.mbsyncrc}"
+
+prepmsmtp() { echo "account $fulladdr
+host $smtp
+port ${sport:-587}
+from $fulladdr
+user $login
+passwordeval \"pass $fulladdr\"
+${tlsline:-tls on}
+" >> "$msmtprc"
+}
+
+prepmbsync() { mkdir -p "${mbsyncrc%/*}"
+	echo "
+IMAPStore $fulladdr-remote
+Host $imap
+Port ${iport:-993}
+User $login
+PassCmd \"pass $fulladdr\"
+AuthMechs LOGIN
+SSLType ${imapssl:-IMAPS}
+MaildirStore $fulladdr-local
+Path ${XDG_DATA_HOME}/mail/$fulladdr/
+Inbox ${XDG_DATA_HOME}/mail/$fulladdr/${inbox:-INBOX}
+Channel $fulladdr
+Master :$fulladdr-remote:
+Slave :$fulladdr-local:
+# End profile
+" >> "$mbsyncrc" ;}
+
