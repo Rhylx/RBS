@@ -5,6 +5,11 @@
 
 msmtprc="${XDG_CONFIG_HOME:-$HOME/.config}/msmtp/config"
 mbsyncrc="${MBSYNCRC:-$HOME/.mbsyncrc}"
+cachedir="${XDG_CACHE_HOME:-$HOME/.cache}/mutt-wizard"
+muttrc="${XDG_CONFIG_HOME:-$HOME/.config}/mutt/muttrc"
+accdir="${XDG_CONFIG_HOME:-$HOME/.config}/mutt/accounts"
+mwconfig="${XDG_CONFIG_HOME:-$HOME/.config}/mutt/muttrc_base"
+emailaddf="mymails.csv"
 
 prepmsmtp() { echo "account $fulladdr
 host $smtp
@@ -34,3 +39,44 @@ Slave :$fulladdr-local:
 # End profile
 " >> "$mbsyncrc" ;}
 
+prepmutt() { echo "set realname = \"$realname\"
+set from = \"$fulladdr\"
+set sendmail = \"msmtp -a $fulladdr\"
+alias me $realname <$fulladdr>
+set folder = \"$maildir/$fulladdr\"
+set header_cache = $cachedir/$fulladdr/headers
+set message_cachedir = $cachedir/$fulladdr/bodies
+set mbox_type = Maildir
+
+bind index,pager gg noop
+bind index,pager g noop
+bind index,pager M noop
+bind index,pager C noop
+bind index gg first-entry
+unmailboxes *
+unalternates *
+unset signature
+unmacro index o
+synccmd="macro index o \"<shell-escape>mailsync $fulladdr<enter>\" \"run mbsync to sync $fulladdr\""
+" > "$accdir/$idnum-$fulladdr.muttrc"
+
+	! grep -q "^source.*mutt-wizard.muttrc" "$muttrc" && echo "source $mwconfig" >> "$muttrc"
+	! grep "^source.*.muttrc" "$muttrc" | grep -qv "$mwconfig" && echo "source $accdir/$idnum-$fulladdr.muttrc" >> "$muttrc"
+	echo "macro index,pager i$idnum '<sync-mailbox><enter-command>source $accdir/$idnum-$fulladdr.muttrc<enter><change-folder>!<enter>;<check-stats>' \"switch to $fulladdr\"" >> "$muttrc"
+}
+
+
+
+rdata() {
+read
+}
+
+
+
+
+
+#TODO :
+# -> Get email address, realname (askinfo)
+# -> Get boxes
+# -> Get profile
+# -> finalize
