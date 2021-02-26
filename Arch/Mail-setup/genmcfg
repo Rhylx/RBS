@@ -3,6 +3,7 @@
 # Options to add :
 #   -> Delete an account
 
+maildir="${XDG_DATA_HOME}/mail"
 msmtprc="${XDG_CONFIG_HOME:-$HOME/.config}/msmtp/config"
 mbsyncrc="${MBSYNCRC:-$HOME/.mbsyncrc}"
 cachedir="${XDG_CACHE_HOME:-$HOME/.cache}/mutt-wizard"
@@ -46,17 +47,6 @@ alias me $realname <$fulladdr>
 set folder = \"$maildir/$fulladdr\"
 set header_cache = $cachedir/$fulladdr/headers
 set message_cachedir = $cachedir/$fulladdr/bodies
-set mbox_type = Maildir
-
-bind index,pager gg noop
-bind index,pager g noop
-bind index,pager M noop
-bind index,pager C noop
-bind index gg first-entry
-unmailboxes *
-unalternates *
-unset signature
-unmacro index o
 synccmd="macro index o \"<shell-escape>mailsync $fulladdr<enter>\" \"run mbsync to sync $fulladdr\""
 " > "$accdir/$idnum-$fulladdr.muttrc"
 
@@ -72,6 +62,16 @@ IFS=, read -r fulladdr realname <<EOF
 $1
 EOF
 }
+
+getaccounts() { accounts="$(find -L "$accdir" -type f 2>/dev/null | grep -o "[0-9]-.*.muttrc" | sed "s/-/: /;s/\.muttrc$//" | sort -n)" ;}
+
+formatShortcut() { toappend="$toappend
+macro index,pager g$1 \"<change-folder>=$3<enter>\" \"go to $2\"
+macro index,pager M$1 \";<save-message>=$3<enter>\" \"move mail to $2\"
+macro index,pager C$1 \";<copy-message>=$3<enter>\" \"copy mail to $2\"" ;}
+
+setBox() { toappend="$toappend
+set $1 = \"+$2\"" ;}
 
 getboxes() {
 mailboxes="$(printf "INBOX\\nDrafts\\nJunk\\nTrash\\nSent\\nArchive")"
@@ -96,12 +96,18 @@ getaccounts; for x in $(seq 1 9); do echo "$accounts" | grep -q "^$x:" || { expo
 	done
 }
 
+getprofiles() { \
+	mkdir -p "$accdir" "$cachedir/$fulladdr/bodies"
+	#unset msmtp_header msmtp_profile mutt_profile mbsync_profile
+	prepmbsync
+	prepmsmtp
+	prepmutt
+	#prepnotmuch # Create a notmuch config file if not present already.
+}
 
+finalize() { echo "$toappend" >> "$accdir/$idnum-$fulladdr.muttrc"
+	echo "$mailboxes" | xargs -I {} mkdir -p "$maildir/$fulladdr/{}/cur" "$maildir/$fulladdr/{}/tmp" "$maildir/$fulladdr/{}/new"
+	echo "$fulladdr (account #$idnum) added successfully."
+	#command -V urlview >/dev/null 2>&1 && [ ! -f "$HOME/.urlview" ] && echo "COMMAND \$BROWSER" > "$HOME/.urlview"
+	return 0 ;}
 
-
-
-#TODO :
-# -> Get email address, realname (askinfo)
-# -> Get boxes
-# -> Get profile
-# -> finalize
