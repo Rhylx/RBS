@@ -1,4 +1,4 @@
-DOMAIN,IMAP,imap port, SMTP,smtp port
+DOMAIN,IMAP,imap port,SMTP,smtp port
 gmail.com,imap.gmail.com,993,smtp.gmail.com,587
 hotmail*,outlook.office365.com,993,smtp.office365.com,587
 *.ec-lyon.fr,imap.ec-lyon.fr,993,smtp.ec-lyon.fr,587

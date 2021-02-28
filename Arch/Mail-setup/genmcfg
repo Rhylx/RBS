@@ -10,7 +10,8 @@ cachedir="${XDG_CACHE_HOME:-$HOME/.cache}/mutt-wizard"
 muttrc="${XDG_CONFIG_HOME:-$HOME/.config}/mutt/muttrc"
 accdir="${XDG_CONFIG_HOME:-$HOME/.config}/mutt/accounts"
 mwconfig="${XDG_CONFIG_HOME:-$HOME/.config}/mutt/muttrc_base"
-emailaddf="mymails.csv"
+domaininfo="mdb.csv"
+emailaddf="emails.csv"
 
 prepmsmtp() { echo "account $fulladdr
 host $smtp
@@ -58,8 +59,9 @@ synccmd="macro index o \"<shell-escape>mailsync $fulladdr<enter>\" \"run mbsync 
 
 
 rdata() {
+extractedinf="$(sed '${1}q;d' $emailaddf)"
 IFS=, read -r fulladdr realname <<EOF
-$1
+$extractedinf
 EOF
 }
 
@@ -72,6 +74,17 @@ macro index,pager C$1 \";<copy-message>=$3<enter>\" \"copy mail to $2\"" ;}
 
 setBox() { toappend="$toappend
 set $1 = \"+$2\"" ;}
+
+parsedomains(){ serverinfo="$(grep "^${fulladdr#*@}" "$domaininfo" 2>/dev/null)"
+
+	IFS=, read -r service imapsugg iportsugg smtpsugg sportsugg <<EOF
+$serverinfo
+EOF
+	imap="$imapsugg"
+	smtp="$smtpsugg"
+	sport="$sportsugg"
+	iport="$iportsugg"
+}
 
 getboxes() {
 mailboxes="$(printf "INBOX\\nDrafts\\nJunk\\nTrash\\nSent\\nArchive")"
@@ -111,3 +124,13 @@ finalize() { echo "$toappend" >> "$accdir/$idnum-$fulladdr.muttrc"
 	#command -V urlview >/dev/null 2>&1 && [ ! -f "$HOME/.urlview" ] && echo "COMMAND \$BROWSER" > "$HOME/.urlview"
 	return 0 ;}
 
+[! -f "$emailaddf"] || echo "Create a file $emailaddf with full email adresses and realnames"; exit 1;
+for x in {1..$(wc -l "$emailaddf")}
+do
+rdata "$x"
+getaccounts; if [ $(echo "$accounts" | grep -q "\s$fulladdr$" 2>/dev/null) ]; then
+echo "$fulladdr has already been added"
+else
+parsedomains && getboxes && getprofiles && finalize
+fi
+done
