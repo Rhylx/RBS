@@ -17,7 +17,7 @@ prepmsmtp() { echo "account $fulladdr
 host $smtp
 port ${sport:-587}
 from $fulladdr
-user $login
+user $fulladdr
 passwordeval \"pass $fulladdr\"
 ${tlsline:-tls on}
 " >> "$msmtprc"
@@ -48,7 +48,7 @@ alias me $realname <$fulladdr>
 set folder = \"$maildir/$fulladdr\"
 set header_cache = $cachedir/$fulladdr/headers
 set message_cachedir = $cachedir/$fulladdr/bodies
-synccmd="macro index o \"<shell-escape>mailsync $fulladdr<enter>\" \"run mbsync to sync $fulladdr\""
+macro index o \"<shell-escape>mailsync $fulladdr<enter>\" \"run mbsync to sync $fulladdr\"
 " > "$accdir/$idnum-$fulladdr.muttrc"
 
 	! grep -q "^source.*mutt-wizard.muttrc" "$muttrc" && echo "source $mwconfig" >> "$muttrc"
@@ -59,7 +59,7 @@ synccmd="macro index o \"<shell-escape>mailsync $fulladdr<enter>\" \"run mbsync 
 
 
 rdata() {
-extractedinf="$(sed '${1}q;d' $emailaddf)"
+extractedinf="$(sed "${1}q;d" $emailaddf)"
 IFS=, read -r fulladdr realname <<EOF
 $extractedinf
 EOF
@@ -87,7 +87,7 @@ EOF
 }
 
 getboxes() {
-mailboxes="$(printf "INBOX\\nDrafts\\nJunk\\nTrash\\nSent\\nArchive")"
+mailboxes="$(printf "Inbox\\nDrafts\\nJunk\\nTrash\\nSent\\nArchive")"
 getaccounts; for x in $(seq 1 9); do echo "$accounts" | grep -q "^$x:" || { export idnum="$x"; break ;}; done
 
 
@@ -124,13 +124,17 @@ finalize() { echo "$toappend" >> "$accdir/$idnum-$fulladdr.muttrc"
 	#command -V urlview >/dev/null 2>&1 && [ ! -f "$HOME/.urlview" ] && echo "COMMAND \$BROWSER" > "$HOME/.urlview"
 	return 0 ;}
 
-[! -f "$emailaddf"] || echo "Create a file $emailaddf with full email adresses and realnames"; exit 1;
-for x in {1..$(wc -l "$emailaddf")}
-do
-rdata "$x"
-getaccounts; if [ $(echo "$accounts" | grep -q "\s$fulladdr$" 2>/dev/null) ]; then
-echo "$fulladdr has already been added"
-else
-parsedomains && getboxes && getprofiles && finalize
-fi
-done
+rdata 1
+parsedomains
+getboxes
+finalize
+#[ ! -f "$emailaddf"  ] && { echo "Create a file $emailaddf with full email adresses and realnames"  && exit 1;}
+#for x in {1..$(wc -l "$emailaddf")}
+#do
+#rdata "$x"
+#getaccounts; if [ $(echo "$accounts" | grep -q "\s$fulladdr$" 2>/dev/null) ]; then
+#echo "$fulladdr has already been added"
+#else
+#parsedomains && getboxes && getprofiles && finalize
+#fi
+#done
