@@ -131,17 +131,14 @@ finalize() { echo "$toappend" >> "$accdir/$idnum-$fulladdr.muttrc"
 	#command -V urlview >/dev/null 2>&1 && [ ! -f "$HOME/.urlview" ] && echo "COMMAND \$BROWSER" > "$HOME/.urlview"
 	return 0 ;}
 
-rdata 1
-parsedomains
-getboxes
-finalize
-#[ ! -f "$emailaddf"  ] && { echo "Create a file $emailaddf with full email adresses and realnames"  && exit 1;}
-#for x in {1..$(wc -l "$emailaddf")}
-#do
-#rdata "$x"
-#getaccounts; if [ $(echo "$accounts" | grep -q "\s$fulladdr$" 2>/dev/null) ]; then
-#echo "$fulladdr has already been added"
-#else
-#parsedomains && getboxes && getprofiles && finalize
-#fi
-#done
+[ ! -f "$emailaddf"  ] && { echo "Create a file $emailaddf with full email adresses and realnames"  && exit 1;}
+n=$(wc -l < "${emailaddf}")
+for x in $(seq 1 $n)
+do
+rdata "$x"
+getaccounts; if [ $(echo "$accounts" | grep -q "\s$fulladdr$" 2>/dev/null) ]; then
+echo "$fulladdr has already been added"
+else
+parsedomains && getboxes && getprofiles && finalize
+fi
+done
