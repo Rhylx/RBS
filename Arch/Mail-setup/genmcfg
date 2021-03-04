@@ -18,7 +18,7 @@ host $smtp
 port ${sport:-587}
 from $fulladdr
 user $fulladdr
-passwordeval \"pass $fulladdr\"
+passwordeval \"pass mail/$fulladdr\"
 ${tlsline:-tls on}
 " >> "$msmtprc"
 }
@@ -29,9 +29,16 @@ IMAPStore $fulladdr-remote
 Host $imap
 Port ${iport:-993}
 User $login
-PassCmd \"pass $fulladdr\"
+PassCmd \"pass mail/$fulladdr\"
 AuthMechs LOGIN
-SSLType ${imapssl:-IMAPS}
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+Subfolders Verbatim
+Expunge Both
+Create Both
+SyncState *
+MaxMessages 0
+ExpireUnread no
 MaildirStore $fulladdr-local
 Path ${XDG_DATA_HOME}/mail/$fulladdr/
 Inbox ${XDG_DATA_HOME}/mail/$fulladdr/${inbox:-INBOX}
