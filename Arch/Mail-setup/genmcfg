@@ -28,23 +28,25 @@ prepmbsync() { mkdir -p "${mbsyncrc%/*}"
 IMAPStore $fulladdr-remote
 Host $imap
 Port ${iport:-993}
-User $login
+User $fulladdr
 PassCmd \"pass mail/$fulladdr\"
 AuthMechs LOGIN
 SSLType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+MaildirStore $fulladdr-local
 Subfolders Verbatim
+Path ${XDG_DATA_HOME}/mail/$fulladdr/
+Inbox ${XDG_DATA_HOME}/mail/$fulladdr/${inbox:-INBOX}
+
+Channel $fulladdr
 Expunge Both
+Master :$fulladdr-remote:
+Slave :$fulladdr-local:
 Create Both
 SyncState *
 MaxMessages 0
 ExpireUnread no
-MaildirStore $fulladdr-local
-Path ${XDG_DATA_HOME}/mail/$fulladdr/
-Inbox ${XDG_DATA_HOME}/mail/$fulladdr/${inbox:-INBOX}
-Channel $fulladdr
-Master :$fulladdr-remote:
-Slave :$fulladdr-local:
 # End profile
 " >> "$mbsyncrc" ;}
 
