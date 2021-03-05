@@ -19,7 +19,6 @@ port ${sport:-587}
 from $fulladdr
 user $fulladdr
 passwordeval \"pass mail/$fulladdr\"
-${tlsline:-tls on}
 " >> "$msmtprc"
 }
 
@@ -57,6 +56,16 @@ alias me $realname <$fulladdr>
 set folder = \"$maildir/$fulladdr\"
 set header_cache = $cachedir/$fulladdr/headers
 set message_cachedir = $cachedir/$fulladdr/bodies
+set mbox_type = Maildir
+bind index,pager gg noop
+bind index,pager g noop
+bind index,pager M noop
+bind index,pager C noop
+bind index gg first-entry
+unmailboxes *
+unalternates *
+unset signature
+unmacro index o
 macro index o \"<shell-escape>mailsync $fulladdr<enter>\" \"run mbsync to sync $fulladdr\"
 " > "$accdir/$idnum-$fulladdr.muttrc"
 
