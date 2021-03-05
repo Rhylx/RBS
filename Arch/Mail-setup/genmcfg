@@ -18,7 +18,7 @@ host $smtp
 port ${sport:-587}
 from $fulladdr
 user $fulladdr
-passwordeval \"pass mail/$fulladdr\"
+passwordeval \"evpass mail $fulladdr\"
 auth on
 tls  on
 tls_trust_file	/etc/ssl/certs/ca-certificates.crt
@@ -32,7 +32,7 @@ IMAPStore $fulladdr-remote
 Host $imap
 Port ${iport:-993}
 User $fulladdr
-PassCmd \"pass mail/$fulladdr\"
+PassCmd \"evpass mail $fulladdr\"
 AuthMechs LOGIN
 SSLType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
