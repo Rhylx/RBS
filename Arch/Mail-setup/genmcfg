@@ -19,6 +19,10 @@ port ${sport:-587}
 from $fulladdr
 user $fulladdr
 passwordeval \"pass mail/$fulladdr\"
+auth on
+tls  on
+tls_trust_file	/etc/ssl/certs/ca-certificates.crt
+logfile "${XDG_CONFIG_HOME}"/msmtp/msmtp.log
 " >> "$msmtprc"
 }
 
