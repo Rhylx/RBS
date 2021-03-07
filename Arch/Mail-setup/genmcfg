@@ -74,7 +74,7 @@ unmacro index o
 macro index o \"<shell-escape>mailsync $fulladdr<enter>\" \"run mbsync to sync $fulladdr\"
 " > "$accdir/$idnum-$fulladdr.muttrc"
 
-	! grep -q "^source.*mutt-wizard.muttrc" "$muttrc" && echo "source $mwconfig" >> "$muttrc"
+	! grep -q "^source.*muttrc_base" "$muttrc" && echo "source $mwconfig" >> "$muttrc"
 	! grep "^source.*.muttrc" "$muttrc" | grep -qv "$mwconfig" && echo "source $accdir/$idnum-$fulladdr.muttrc" >> "$muttrc"
 	echo "macro index,pager i$idnum '<sync-mailbox><enter-command>source $accdir/$idnum-$fulladdr.muttrc<enter><change-folder>!<enter>;<check-stats>' \"switch to $fulladdr\"" >> "$muttrc"
 }
@@ -133,7 +133,8 @@ getaccounts; for x in $(seq 1 9); do echo "$accounts" | grep -q "^$x:" || { expo
 	done
 }
 
-delete() {echo "Select the account you would like to delete (by number):"
+delete() {
+	echo "Select the account you would like to delete (by number):"
 	list || exit 1
 	read -r input
 	match="^$input:"
