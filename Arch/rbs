@@ -209,7 +209,8 @@ clear_tmprbs(){
 	echo "Setting back sudoers to normal..."
 	echo "%wheel ALL=(ALL) ALL
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/systemctl suspend,/usr/bin/mount,/usr/bin/umount,/usr/bin/pacman -Syu,/usr/bin/pacman -Syyu,/usr/bin/systemctl restart NetworkManager,/usr/bin/pacman -Syyu --noconfirm,/usr/bin/loadkeys,/usr/bin/yay,/usr/bin/swapon,/usr/bin/swapoff
-%wheel ALL=(ALL) NOPASSWD: ALL #RBS" | sudo tee -a /etc/sudoers >/dev/null
+%wheel ALL=(ALL) NOPASSWD: ALL #RBS
+Defaults timestamp_timeout=30" | sudo tee -a /etc/sudoers >/dev/null
 	sudo sed -i "/#RBS/d" /etc/sudoers
 }
 
