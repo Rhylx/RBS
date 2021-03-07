@@ -46,6 +46,7 @@ Channel $fulladdr
 Expunge Both
 Master :$fulladdr-remote:
 Slave :$fulladdr-local:
+Patterns * !\"[Gmail]/All Mail\"
 Create Both
 SyncState *
 MaxMessages 0
@@ -151,7 +152,7 @@ n=$(wc -l < "${emailaddf}")
 for x in $(seq 1 $n)
 do
 rdata "$x"
-getaccounts; if [ $(echo "$accounts" | grep -q "\s$fulladdr$" 2>/dev/null) ]; then
+getaccounts; if $(echo "$accounts" | grep -q "\s$fulladdr$" 2>/dev/null); then
 echo "$fulladdr has already been added"
 else
 parsedomains && getboxes && getprofiles && finalize
