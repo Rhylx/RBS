@@ -128,7 +128,7 @@ getaccounts; for x in $(seq 1 9); do echo "$accounts" | grep -q "^$x:" || { expo
 			*[Jj][Uu][Nn][Kk]*) formatShortcut j junk "$x" ;;
 			*[Aa][Rr][Cc][Hh][Ii][Vv][Ee]*) formatShortcut a archive "$x" ;;
 			*[Ss][Pp][Aa][Mm]*) formatShortcut S spam "$x" ;;
-			*[Ii][Nn][Bb][Oo][Xx]*) formatShortcut i inbox "$x"; setBox spoolfile "$x" inbox="$x" ;;
+			*[Ii][Nn][Bb][Oo][Xx]*) formatShortcut i inbox "$x"; setBox spoolfile "INBOX" inbox="$x" ;;
 		esac
 	done
 }
