@@ -75,7 +75,7 @@ macro index o \"<shell-escape>mailsync $fulladdr<enter>\" \"run mbsync to sync $
 " > "$accdir/$idnum-$fulladdr.muttrc"
 
 	! grep -q "^source.*muttrc_base" "$muttrc" && echo "source $mwconfig" >> "$muttrc"
-	! grep "^source.*.muttrc" "$muttrc" | grep -qv "$mwconfig" && echo "source $accdir/$idnum-$fulladdr.muttrc" >> "$muttrc"
+	echo "source $accdir/$idnum-$fulladdr.muttrc" >> "$muttrc"
 	echo "macro index,pager i$idnum '<sync-mailbox><enter-command>source $accdir/$idnum-$fulladdr.muttrc<enter><change-folder>!<enter>;<check-stats>' \"switch to $fulladdr\"" >> "$muttrc"
 }
 
@@ -147,7 +147,7 @@ delete() {
 	sed -ibu "/account $fulladdr$/,/^\(\s*$\|account\)/d" "$mpoprc" 2>/dev/null; rm -f "$mpoprc"bu
 	rm -rf "${maildir:?}/${fulladdr:?}"
 	# Get rid of those multiple newlines because I don't know awk well enough to do it by default lol.
-	for file in "$msmtprc" "$mbsyncrc" "$mpoprc"; do
+	for file in "$msmtprc" "$mbsyncrc"; do
  		tr '\n' '|' 2>/dev/null  < "$file" | sed "s/||\+/||/g" | tr '|' '\n' >> "$file"bu
 		mv -f "$file"bu "$file"
 	done
