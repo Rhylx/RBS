@@ -56,25 +56,9 @@ postconf -e "smtpd_recipient_restrictions = permit_sasl_authenticated, permit_my
 postconf -e "home_mailbox = Mail/Inbox/"
 
 # master.cf
-echo "Configuring Postfix's master.cf..."
+echo "Copying  master.cf..."
 
-sed -i "/^\s*-o/d;/^\s*submission/d;/^\s*smtp/d" /etc/postfix/master.cf
-
-#echo "smtp unix - - n - - smtp
-#smtp inet n - y - - smtpd
-#  -o content_filter=spamassassin
-#submission inet n       -       y       -       -       smtpd
-#  -o syslog_name=postfix/submission
-#  -o smtpd_tls_security_level=encrypt
-#  -o smtpd_sasl_auth_enable=yes
-#  -o smtpd_tls_auth_only=yes
-#smtps     inet  n       -       y       -       -       smtpd
-#  -o syslog_name=postfix/smtps
-#  -o smtpd_tls_wrappermode=yes
-#  -o smtpd_sasl_auth_enable=yes
-#spamassassin unix -     n       n       -       -       pipe
-#  user=debian-spamd argv=/usr/bin/spamc -f -e /usr/sbin/sendmail -oi -f \${sender} \${recipient}" >> /etc/postfix/master.cf
-
+cp master.cf /etc/postfix/master.cf
 
 # By default, dovecot has a bunch of configs in /etc/dovecot/conf.d/ These
 # files have nice documentation if you want to read it, but it's a huge pain to
