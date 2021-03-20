@@ -180,6 +180,12 @@ acti_proc(){ # To be modified for runnit
 	sudo systemctl enable pcscd >/dev/null 2>&1
 }
 
+add_my_gpg(){
+	echo "Importing my gpg key"
+	gpg --keyserver keyserver.ubuntu.com --recv-keys a4376fe1adf80214 > /dev/null 2>&1
+
+}
+
 move_dflt_dirs(){
 	echo "Cleaning home..."
 	mv -ft /home/"${username}"/.local/ /home/"${username}"/.cargo >/dev/null 2>&1
@@ -234,6 +240,7 @@ clear ; (internet &&
  pacman_statusbar &&
   insert_dotfiles &&
 	acti_proc &&
+       add_my_gpg &&
    move_dflt_dirs &&
      clear_tmprbs &&
         well_done) || error_message
