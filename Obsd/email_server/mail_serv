@@ -95,7 +95,7 @@ userdb {
 }
 #Fallback: Use plain old PAM to find user passwords
 passdb {
-	driver = pam
+	driver = bsd_auth
 }
 
 # Our mail for each user will be in ~/Mail, and the inbox will be ~/Mail/Inbox
@@ -124,54 +124,51 @@ namespace inbox {
 }
 }
 
-# Here we let Postfix use Dovecot's authetication system.
+# Here we let Postfix use Dovecot's authentication system.
 
 service auth {
   unix_listener /var/spool/postfix/private/auth {
 	mode = 0660
-	user = postfix
-	group = postfix
+	user = _postfix
+	group = _postfix
 }
 }
 
-protocol lda {
-  mail_plugins = \$mail_plugins sieve
-}
+# Sieve part to review :
+#protocol lda {
+#  mail_plugins = \$mail_plugins sieve
+#}
 
-protocol lmtp {
-  mail_plugins = \$mail_plugins sieve
-}
+#protocol lmtp {
+#  mail_plugins = \$mail_plugins sieve
+#}
 
-plugin {
-	sieve = ~/.dovecot.sieve
-	sieve_default = /var/lib/dovecot/sieve/default.sieve
-	#sieve_global_path = /var/lib/dovecot/sieve/default.sieve
-	sieve_dir = ~/.sieve
-	sieve_global_dir = /var/lib/dovecot/sieve/
-}
+#plugin {
+#	sieve = ~/.dovecot.sieve
+#	sieve_default = /var/lib/dovecot/sieve/default.sieve
+#	#sieve_global_path = /var/lib/dovecot/sieve/default.sieve
+#	sieve_dir = ~/.sieve
+#	sieve_global_dir = /var/lib/dovecot/sieve/
+#}
 " > /etc/dovecot/dovecot.conf
 
-# If using an old version of Dovecot, remove the ssl_dl line.
-case "$(dovecot --version)" in
-	1|2.1*|2.2*) sed -i "/^ssl_dh/d" /etc/dovecot/dovecot.conf ;;
-esac
+#mkdir /var/lib/dovecot/sieve/
 
-mkdir /var/lib/dovecot/sieve/
+#echo "require [\"fileinto\", \"mailbox\"];
+#if header :contains \"X-Spam-Flag\" \"YES\"
+#	{
+#		fileinto \"Junk\";
+#	}" > /var/lib/dovecot/sieve/default.sieve
+#
+#grep -q "^vmail:" /etc/passwd || useradd vmail
+#chown -R vmail:vmail /var/lib/dovecot
+#sievec /var/lib/dovecot/sieve/default.sieve
 
-echo "require [\"fileinto\", \"mailbox\"];
-if header :contains \"X-Spam-Flag\" \"YES\"
-	{
-		fileinto \"Junk\";
-	}" > /var/lib/dovecot/sieve/default.sieve
-
-grep -q "^vmail:" /etc/passwd || useradd vmail
-chown -R vmail:vmail /var/lib/dovecot
-sievec /var/lib/dovecot/sieve/default.sieve
-
-echo "Preparing user authentication..."
-grep -q nullok /etc/pam.d/dovecot ||
-echo "auth    required        pam_unix.so nullok
-account required        pam_unix.so" >> /etc/pam.d/dovecot
+# Not needed for openbsd ?
+#echo "Preparing user authentication..."
+#grep -q nullok /etc/pam.d/dovecot ||
+#echo "auth    required        pam_unix.so nullok
+#account required        pam_unix.so" >> /etc/pam.d/dovecot
 
 # OpenDKIM
 
