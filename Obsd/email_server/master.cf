@@ -131,7 +131,7 @@ postlog   unix-dgram n  -       n       -       1       postlogd
 
 smtp unix - - n - - smtp
 smtp inet n - y - - smtpd
-  -o content_filter=spamassassin
+#  -o content_filter=spamassassin
 submission inet n       -       y       -       -       smtpd
   -o syslog_name=postfix/submission
   -o smtpd_tls_security_level=encrypt
@@ -141,5 +141,5 @@ smtps     inet  n       -       y       -       -       smtpd
   -o syslog_name=postfix/smtps
   -o smtpd_tls_wrappermode=yes
   -o smtpd_sasl_auth_enable=yes
-spamassassin unix -     n       n       -       -       pipe
-  user=debian-spamd argv=/usr/bin/spamc -f -e /usr/sbin/sendmail -oi -f \${sender} \${recipient}
+#spamassassin unix -     n       n       -       -       pipe
+#  user=debian-spamd argv=/usr/bin/spamc -f -e /usr/sbin/sendmail -oi -f \${sender} \${recipient}
