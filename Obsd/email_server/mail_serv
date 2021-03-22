@@ -184,7 +184,7 @@ service auth {
 echo "Generating OpenDKIM keys..."
 mkdir -p /etc/postfix/dkim
 opendkim-genkey -D /etc/postfix/dkim/ -d "$domain" -s "$subdom"
-chgrp opendkim /etc/postfix/dkim/*
+chgrp _opendkim /etc/postfix/dkim/*
 chmod g+r /etc/postfix/dkim/*
 
 # Generate the OpenDKIM info:
@@ -196,9 +196,7 @@ grep -q "$domain" /etc/postfix/dkim/signingtable 2>/dev/null ||
 echo "*@$domain $subdom._domainkey.$domain" >> /etc/postfix/dkim/signingtable
 
 grep -q "127.0.0.1" /etc/postfix/dkim/trustedhosts 2>/dev/null ||
-	echo "127.0.0.1
-10.1.0.0/16
-1.2.3.4/24" >> /etc/postfix/dkim/trustedhosts
+	echo "127.0.0.1" >> /etc/postfix/dkim/trustedhosts
 
 # ...and source it from opendkim.conf
 grep -q "^KeyTable" /etc/opendkim.conf 2>/dev/null || echo "KeyTable file:/etc/postfix/dkim/keytable
