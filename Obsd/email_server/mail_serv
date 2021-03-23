@@ -223,10 +223,10 @@ postconf -e "smtpd_milters = inet:localhost:12301"
 postconf -e "non_smtpd_milters = inet:localhost:12301"
 postconf -e "mailbox_command = /usr/lib/dovecot/deliver"
 
-for x in spamassassin opendkim dovecot postfix; do
-	printf "Restarting %s..." "$x"
-	service "$x" restart && printf " ...done\\n"
-done
+#for x in spamassassin opendkim dovecot postfix; do
+#	printf "Restarting %s..." "$x"
+#	service "$x" restart && printf " ...done\\n"
+#done
 
 pval="$(tr -d "\n" </etc/postfix/dkim/$subdom.txt | sed "s/k=rsa.* \"p=/k=rsa; p=/;s/\"\s*\"//;s/\"\s*).*//" | grep -o "p=.*")"
 dkimentry="$subdom._domainkey.$domain	TXT	v=DKIM1; k=rsa; $pval"
