@@ -4,7 +4,7 @@ domain="rpaegelow.com"
 subdom="mail"
 maildomain="$subdom.$domain"
 certdir="/etc/letsencrypt/live/$maildomain"
-echo "This will setup everything to config a server mail on this domain : $(domain)"
+echo "This will setup everything to config a server mail on this domain : ${domain}"
 echo "Installing programs..."
 pkg_add postfix dovecot opendkim
 
