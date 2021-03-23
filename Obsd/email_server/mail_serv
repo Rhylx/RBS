@@ -4,17 +4,14 @@ domain="rpaegelow.com"
 subdom="mail"
 maildomain="$subdom.$domain"
 certdir="/etc/letsencrypt/live/$maildomain"
-echo "This will setup everything to config a server mail on this domain : "$(domain)""
+echo "This will setup everything to config a server mail on this domain : $(domain)"
 echo "Installing programs..."
 pkg_add postfix dovecot opendkim
 
-[ ! -d "$certdir" ] && certdir="$(dirname "$(certbot certificates 2>/dev/null | grep "$maildomain\|*.$domain" -A 2 | awk '/Certificate Path/ {print $3}' | head -n1)")"
-
-[ ! -d "$certdir" ] && echo "Note! You must first have a Let's Encrypt Certbot HTTPS/SSL Certificate for $maildomain.
-
-Use Let's Encrypt's Certbot to get that and then rerun this script.
-
-You may need to set up a dummy $maildomain site in nginx or Apache for that to work." && exit
+rcctl disable smtpd
+rcctl stop smtpd
+rcctl enable postfix
+rcctl enable dovecot
 
 # NOTE ON POSTCONF COMMANDS
 
@@ -26,13 +23,13 @@ You may need to set up a dummy $maildomain site in nginx or Apache for that to w
 echo "Configuring Postfix's main.cf..."
 
 # Change the cert/key files to the default locations of the Let's Encrypt cert/key
-postconf -e "smtpd_tls_key_file=$certdir/privkey.pem"
-postconf -e "smtpd_tls_cert_file=$certdir/fullchain.pem"
+postconf -e "smtpd_tls_key_file=${certdir}/privkey.pem"
+postconf -e "smtpd_tls_cert_file=${certdir}/fullchain.pem"
 postconf -e "smtpd_tls_security_level = may"
 postconf -e "smtpd_tls_auth_only = yes"
 postconf -e "smtp_tls_security_level = may"
 postconf -e "smtp_tls_loglevel = 1"
-postconf -e "smtp_tls_CAfile=$certdir/cert.pem"
+postconf -e "smtp_tls_CAfile=${certdir}/cert.pem"
 postconf -e "smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1"
 postconf -e "smtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1"
 postconf -e "smtpd_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1"
@@ -77,8 +74,8 @@ echo "# Dovecot config
 
 # If you're not a brainlet, SSL must be set to required.
 ssl = required
-ssl_cert = <$certdir/fullchain.pem
-ssl_key = <$certdir/privkey.pem
+ssl_cert = <${certdir}/fullchain.pem
+ssl_key = <${certdir}/privkey.pem
 ssl_min_protocol = TLSv1.2
 ssl_cipher_list = EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA256:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EDH+aRSA+AESGCM:EDH+aRSA+SHA256:EDH+aRSA:EECDH:!aNULL:!eNULL:!MEDIUM:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS:!RC4:!SEED
 ssl_prefer_server_ciphers = yes
@@ -183,17 +180,17 @@ service auth {
 # Create an OpenDKIM key in the proper place with proper permissions.
 echo "Generating OpenDKIM keys..."
 mkdir -p /etc/postfix/dkim
-opendkim-genkey -D /etc/postfix/dkim/ -d "$domain" -s "$subdom"
+opendkim-genkey -D /etc/postfix/dkim/ -d "${domain}" -s "${subdom}"
 chgrp _opendkim /etc/postfix/dkim/*
 chmod g+r /etc/postfix/dkim/*
 
 # Generate the OpenDKIM info:
 echo "Configuring OpenDKIM..."
-grep -q "$domain" /etc/postfix/dkim/keytable 2>/dev/null ||
-echo "$subdom._domainkey.$domain $domain:$subdom:/etc/postfix/dkim/$subdom.private" >> /etc/postfix/dkim/keytable
+grep -q "${domain}" /etc/postfix/dkim/keytable 2>/dev/null ||
+echo "${subdom}._domainkey.${domain} ${domain}:${subdom}:/etc/postfix/dkim/${subdom}.private" >> /etc/postfix/dkim/keytable
 
-grep -q "$domain" /etc/postfix/dkim/signingtable 2>/dev/null ||
-echo "*@$domain $subdom._domainkey.$domain" >> /etc/postfix/dkim/signingtable
+grep -q "${domain}" /etc/postfix/dkim/signingtable 2>/dev/null ||
+echo "*@${domain} ${subdom}._domainkey.${domain}" >> /etc/postfix/dkim/signingtable
 
 grep -q "127.0.0.1" /etc/postfix/dkim/trustedhosts 2>/dev/null ||
 	echo "127.0.0.1" >> /etc/postfix/dkim/trustedhosts
@@ -216,7 +213,7 @@ sed -i "/^SOCKET/d" /etc/default/opendkim && echo "SOCKET=\"inet:12301@localhost
 echo "Configuring Postfix with OpenDKIM settings..."
 postconf -e "smtpd_sasl_security_options = noanonymous, noplaintext"
 postconf -e "smtpd_sasl_tls_security_options = noanonymous"
-postconf -e "myhostname = $maildomain"
+postconf -e "myhostname = ${maildomain}"
 postconf -e "milter_default_action = accept"
 postconf -e "milter_protocol = 6"
 postconf -e "smtpd_milters = inet:localhost:12301"
@@ -228,16 +225,16 @@ postconf -e "mailbox_command = /usr/lib/dovecot/deliver"
 #	service "$x" restart && printf " ...done\\n"
 #done
 
-pval="$(tr -d "\n" </etc/postfix/dkim/$subdom.txt | sed "s/k=rsa.* \"p=/k=rsa; p=/;s/\"\s*\"//;s/\"\s*).*//" | grep -o "p=.*")"
-dkimentry="$subdom._domainkey.$domain	TXT	v=DKIM1; k=rsa; $pval"
-dmarcentry="_dmarc.$domain	TXT	v=DMARC1; p=reject; rua=mailto:dmarc@$domain; fo=1"
-spfentry="@	TXT	v=spf1 mx a:$maildomain -all"
+pval="$(tr -d "\n" </etc/postfix/dkim/${subdom}.txt | sed "s/k=rsa.* \"p=/k=rsa; p=/;s/\"\s*\"//;s/\"\s*).*//" | grep -o "p=.*")"
+dkimentry="${subdom}._domainkey.${domain}	TXT	v=DKIM1; k=rsa; ${pval}"
+dmarcentry="_dmarc.${domain}	TXT	v=DMARC1; p=reject; rua=mailto:dmarc@${domain}; fo=1"
+spfentry="@	TXT	v=spf1 mx a:${maildomain} -all"
 
 useradd -m -G mail dmarc
 
-echo "$dkimentry
-$dmarcentry
-$spfentry" > "$HOME/dns_emailwizard"
+echo "${dkimentry}
+${dmarcentry}
+${spfentry}" > "$HOME/dns_emailwizard"
 
 printf "\033[31m
  _   _
