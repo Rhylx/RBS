@@ -53,7 +53,7 @@ postconf -e "smtpd_recipient_restrictions = permit_sasl_authenticated, permit_my
 postconf -e "home_mailbox = Mail/Inbox/"
 
 # master.cf
-echo "Copying  master.cf..."
+echo "Copying master.cf..."
 
 cp master.cf /etc/postfix/master.cf
 
@@ -149,6 +149,11 @@ service auth {
 #}
 " > /etc/dovecot/dovecot.conf
 
+grep -q dovecot /etc/login.conf || echo "dovecot:\
+    :openfiles-cur=1024:\
+    :openfiles-max=2048:\
+    :tc=daemon:" >> /etc/login.conf
+
 #mkdir /var/lib/dovecot/sieve/
 
 #echo "require [\"fileinto\", \"mailbox\"];
@@ -207,7 +212,7 @@ sed -e '/Socket/s/^#*/#/' -i /etc/opendkim.conf
 grep -q "^Socket\s*inet:12301@localhost" /etc/opendkim.conf || echo "Socket inet:12301@localhost" >> /etc/opendkim.conf
 
 # OpenDKIM daemon settings, removing previously activated socket.
-sed -i "/^SOCKET/d" /etc/default/opendkim && echo "SOCKET=\"inet:12301@localhost\"" >> /etc/default/opendkim
+#sed -i "/^SOCKET/d" /etc/default/opendkim && echo "SOCKET=\"inet:12301@localhost\"" >> /etc/default/opendkim
 
 # Here we add to postconf the needed settings for working with OpenDKIM
 echo "Configuring Postfix with OpenDKIM settings..."
