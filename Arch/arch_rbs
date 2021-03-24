@@ -5,7 +5,7 @@
 echo -e "Here is the output of lsblk : \n"
 lsblk
 echo
-read -rp "Enter drive you want it to install on (only a if on /dev/sda) [a]: " -a X
+read -rp "Enter drive you want it to install on (e.g. /dev/sda) [/dev/sda]: " -a X
 echo "Assuming that there will be 4 partitions: boot, swap, / and /home"
 read -rp "Enter partionsize in gb , separated by a space (swap & /) [2 10]: " -a SIZE
 read -rp "Select your timezone ( ? for more infos ) [Europe/Paris]: " tz
@@ -16,7 +16,7 @@ read -rp "Enter a name for the main user [rhylx]: " username
 read -rp "Do you want to set default passwords ? [Y/n] " psswd
 echo "Let the fun begin!!!"
 
-dfltX=( "a" )
+dfltX=( "/dev/sda" )
 dfltSIZE=( 2 10 )
 X=( "${X[@]:-"${dfltX[@]}"}" )
 SIZE=( "${SIZE[@]:-"${dfltSIZE[@]}"}" )
@@ -37,28 +37,28 @@ partition(){
 	(echo "unit: sectors
 label: dos
 
-/dev/sd${X[0]}1:  size=200M,         type=83, bootable
-/dev/sd${X[0]}2:  size=${SIZE[0]}G,  type=82
-/dev/sd${X[0]}3:  size=${SIZE[1]}G,  type=83
-/dev/sd${X[0]}4:  	             type=83" | sfdisk /dev/sd"${X[0]}" >/dev/null 2>&1) || (echo "Either does the drive not exist or swap + / is too big" && false)
+${X[0]}1:  size=200M,         type=83, bootable
+${X[0]}2:  size=${SIZE[0]}G,  type=82
+${X[0]}3:  size=${SIZE[1]}G,  type=83
+${X[0]}4:  	             type=83" | sfdisk "${X[0]}" >/dev/null 2>&1) || (echo "Either does the drive not exist or swap + / is too big" && false)
 }
 
 format_part(){
 	echo "Formating the disk..."
-	mkfs.ext4 -qF /dev/sd"${X[0]}"4 >/dev/null 2>&1
-	mkfs.ext4 -qF /dev/sd"${X[0]}"3 >/dev/null 2>&1
-	mkfs.ext4 -qF /dev/sd"${X[0]}"1 >/dev/null 2>&1
-	mkswap /dev/sd"${X[0]}"2 >/dev/null 2>&1
-	swapon /dev/sd"${X[0]}"2 >/dev/null 2>&1
+	mkfs.ext4 -qF "${X[0]}"4 >/dev/null 2>&1
+	mkfs.ext4 -qF "${X[0]}"3 >/dev/null 2>&1
+	mkfs.ext4 -qF "${X[0]}"1 >/dev/null 2>&1
+	mkswap "${X[0]}"2 >/dev/null 2>&1
+	swapon "${X[0]}"2 >/dev/null 2>&1
 }
 
 mount_part(){
 	echo "Mounting partitions..."
-	mount /dev/sd"${X[0]}"3 /mnt >/dev/null 2>&1
+	mount "${X[0]}"3 /mnt >/dev/null 2>&1
 	mkdir /mnt/boot >/dev/null 2>&1
-	mount /dev/sd"${X[0]}"1 /mnt/boot >/dev/null 2>&1
+	mount "${X[0]}"1 /mnt/boot >/dev/null 2>&1
 	mkdir /mnt/home >/dev/null 2>&1
-	mount /dev/sd"${X[0]}"4 /mnt/home >/dev/null 2>&1 || (echo "The size of swap+/ is bigger then the actual size available on the disk" && false)
+	mount "${X[0]}"4 /mnt/home >/dev/null 2>&1 || (echo "The size of swap+/ is bigger then the actual size available on the disk" && false)
 }
 
 
@@ -89,7 +89,7 @@ EOF
 grub_install(){
 	echo "Installing grub, it takes a few minutes..."
 	arch-chroot /mnt /bin/sh << EOF
-	grub-install --target=i386-pc /dev/sd"${X[0]}" >/dev/null 2>&1
+	grub-install --target=i386-pc "${X[0]}" >/dev/null 2>&1
 	grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1
 EOF
 }
@@ -143,11 +143,11 @@ remove_all(){
 	umount /mnt/home >/dev/null 2>&1
 	umount /mnt/boot >/dev/null 2>&1
 	umount /mnt >/dev/null 2>&1
-	swapoff /dev/sd"${X[0]}"2 >/dev/null 2>&1
+	swapoff "${X[0]}"2 >/dev/null 2>&1
 	echo "unit: sectors
 label: dos
 
-/dev/sd${X[0]}1:  type=83"| sfdisk /dev/sd"${X[0]}" >/dev/null 2>&1
+${X[0]}1:  type=83"| sfdisk "${X[0]}" >/dev/null 2>&1
 }
 
 remove_all_error(){
