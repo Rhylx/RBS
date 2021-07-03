@@ -1,0 +1,4 @@
+wgkey $(cat /etc/wg.key) wgport 9943
+wgpeer $(cat /etc/serv.pubkey) wgendpoint 149.28.56.98 9943 wgaip 10.10.10.21/24 wgpka 25
+inet 10.10.10.22/24
+up
