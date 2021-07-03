@@ -1,0 +1,5 @@
+#! /bin/ksh
+
+tmp_f=`mktemp` || exit 1
+dig +short myip.opendns.com @resolver1.opendns.com > $tmp_f
+diff /etc/my_ipv4 $tmp_f >/dev/null 2>&1 || (cat $tmp_f > /etc/my_ipv4 && scp -P 2525 /etc/my_ipv4 root@10.10.10.21:/etc/main_ipv4 >/dev/null 2>&1)
